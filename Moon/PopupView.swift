@@ -1,24 +1,36 @@
 import SwiftUI
 
+
+
+enum PopupState {
+    case pause, win, lose
+}
+
 struct PopupView<Content: View>: View {
     let content: Content
+    
+    var state: PopupState
     @Binding var isPresented: Bool
     
-    init(isPresented: Binding<Bool>, @ViewBuilder content: () -> Content) {
+    init(isPresented: Binding<Bool>, state: PopupState,  @ViewBuilder content: () -> Content) {
         self._isPresented = isPresented
         self.content = content()
+        self.state = state
     }
     
     var body: some View {
         ZStack {
             if isPresented {
                 // Заблюрений фон
-                Color.black.opacity(0.2)
+//                Color.black.opacity(0.2)
+//                    .ignoresSafeArea()
+//                    .blur(radius: 5)
+                
+                Rectangle()
+                    .fill(.ultraThinMaterial)
                     .ignoresSafeArea()
-                    .blur(radius: 5)
-                    .onTapGesture {
-                        isPresented = false
-                    }
+                    .background(Color.white.opacity(0.001).ignoresSafeArea())
+                    
                 
                 // Контент попапу
                 content
@@ -33,40 +45,88 @@ struct PopupView<Content: View>: View {
                     
                     VStack(alignment: .center, spacing: -10) {
                         
-                        ZStack {
-                            Image("Frame")
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                                .frame(maxWidth: .infinity, maxHeight: 250)
+                        
+                        switch state {
+                        case .pause:
+                            ZStack {
+                                Image("Frame")
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(maxWidth: .infinity, maxHeight: 250)
 
-                            
-                            Image("PAUSE")
+                                
+                                Image("PAUSE")
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(maxWidth: .infinity, maxHeight: 50)
+                                    .offset(y:70)
+                            }
+                        case .win:
+                            ZStack {
+                                Image("win check up=3 star")
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(maxWidth: .infinity, maxHeight: 100)
+                                    .offset(y:-10)
+                                
+                                Image("YOU WIN!")
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(maxWidth: .infinity, maxHeight: 50)
+                                    .offset(y:70)
+                            }
+                        case .lose:
+                            ZStack {
+                                Image("Loose 3 star")
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(maxWidth: .infinity, maxHeight: 100)
+
+                                
+                                Image("YOU LOSE!")
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(maxWidth: .infinity, maxHeight: 50)
+                                    .offset(y:70)
+                            }
+                        }
+                     
+                    }
+                    
+                    HStack(spacing: -10) {
+                        
+                        Spacer()
+                        
+                        Button(action: {
+                            isPresented = false
+                        }) {
+                            Image("Component 33")
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
-                                .frame(maxWidth: .infinity, maxHeight: 50)
-                                .offset(y:70)
+                                .frame(maxWidth: .infinity, maxHeight: 70)
                         }
                         
-                        HStack {
-                            Image("Group 89")
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                                .frame(maxWidth: .infinity, maxHeight: 90)
-                                .offset(y: -70)
-                            
+                        Button(action: {
+                            // Repeat
+                        }) {
                             Image("Repeat_bottom_button=normal")
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
-                                .frame(maxWidth: .infinity, maxHeight: 90)
-                                .offset(y: -70)
-                            
+                                .frame(maxWidth: .infinity, maxHeight: 70)
+                        }
+                        
+                        Button(action: {
+                            // left
+                        }) {
                             Image("Right__bottom_button=normal")
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
-                                .frame(maxWidth: .infinity, maxHeight: 90)
-                                .offset(y: -70)
+                                .frame(maxWidth: .infinity, maxHeight: 70)
                         }
+                        
+                        Spacer()
                     }
+                    .padding(.top, 280)
                 }
             }
         }

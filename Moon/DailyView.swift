@@ -113,7 +113,7 @@ struct DailyView: View {
                 }
             }
             
-            PopupView(isPresented: $showPopup) {
+            PopupView(isPresented: $showPopup, state: .win) {
                
             }
         }
