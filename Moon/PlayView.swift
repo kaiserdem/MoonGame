@@ -8,7 +8,7 @@ struct PlayView: View {
     @Environment(\.dismiss) private var dismiss
     
     // Поточний індекс світу (збереження в UserDefaults)
-    @State private var currentWorldIndex: Int = UserDefaults.standard.integer(forKey: "currentWorldIndex") == 0 ? 1 : UserDefaults.standard.integer(forKey: "currentWorldIndex")
+    @State private var currentWorldIndex: Int = UserDefaults.standard.integer(forKey: "currentWorldIndex") == 0 ? 0 : UserDefaults.standard.integer(forKey: "currentWorldIndex")
     
     // Поточний світ
     private var currentWorld: WorldModel {
@@ -25,6 +25,11 @@ struct PlayView: View {
     private var totalScore: Int {
         let savedScore = UserDefaults.standard.integer(forKey: "totalScore")
         return savedScore == 0 ? 0 : savedScore
+    }
+    
+    // Ціна поточного рівня
+    private var currentLevelPrice: Int {
+        return 400 + (currentWorldIndex * 200)
     }
     
     // Функції перемикання
