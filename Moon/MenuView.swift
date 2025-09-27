@@ -13,7 +13,8 @@ struct MenuView: View {
     @State var showPopup = false
     
     var body: some View {
-        ZStack {
+        NavigationView {
+            ZStack {
             Image("26 img")
                 .resizable()
                 .aspectRatio(contentMode: .fill)
@@ -112,6 +113,7 @@ struct MenuView: View {
             PopupView(isPresented: $showPopup, state: .win) {
                
             }
+        }
         }
     }
 }
