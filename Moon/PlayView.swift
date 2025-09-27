@@ -70,7 +70,7 @@ struct PlayView: View {
                                         
                                         if gameState.currentWorld.isUnlocked {
                                             
-                                            if gameState.isCurrentIndexSaved {
+                                                if gameState.isWorldSelected(gameState.currentWorld.id) {
                                                 Image("checkmark top button=Default")
                                                     .resizable()
                                                     .aspectRatio(contentMode: .fit)
@@ -96,10 +96,18 @@ struct PlayView: View {
                                             Spacer()
                                                 .frame(width: 60, height: 60)
                                         } else {
-                                            Text("\(gameState.currentLevelPrice)")
-                                                .font(AppFonts.title2)
-                                                .foregroundColor(AppColors.Text.brightGreen)
+                                                Text("\(gameState.currentLevelPrice)")
+                                                    .font(AppFonts.title2)
+                                                    .foregroundColor(AppColors.Text.brightGreen)
+                                                    .onTapGesture {
+                                                        if !gameState.currentWorld.isUnlocked {
+                                                            gameState.buyLevel()
+                                                        }
+                                                    }
                                         }
+                                    }
+                                    .onTapGesture {
+                                        print("onTapGesture")
                                     }
                                 }
                                 .frame(width: 400)

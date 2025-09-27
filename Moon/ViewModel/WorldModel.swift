@@ -20,7 +20,7 @@ struct WorldModel: Identifiable, Codable {
 
 // Приклад використання:
 extension WorldModel {
-    static let sampleWorlds: [WorldModel] = [
+    static var sampleWorlds: [WorldModel] = [
         WorldModel(
             id: 1,
             name: "Льодовий світ",

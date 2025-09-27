@@ -38,7 +38,9 @@ struct InfoView: View {
                                 .shadow(color: Color.black.opacity(0.3), radius: 10, x: 0, y: 0)
                                 .minimumScaleFactor(0.5)
                                 .lineLimit(nil)
-                                .frame(maxHeight: UIScreen.main.bounds.height * 0.6)
+                                //.frame(maxHeight: UIScreen.main.bounds.height * 0.6)
+                                .frame(maxHeight: 400)
+
                             
                             // place for text
                             

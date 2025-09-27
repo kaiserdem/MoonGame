@@ -38,6 +38,8 @@ struct RulesView: View {
                                 .minimumScaleFactor(0.5)
                                 .lineLimit(nil)
                                 .frame(maxHeight: UIScreen.main.bounds.height * 0.6)
+                            //                                .frame(maxHeight: 400)
+
                             
                             // place for text
                             

@@ -30,8 +30,40 @@ class GameState: ObservableObject {
         }
     }
     
+    // Тригер для оновлення UI
+    @Published var worldsUpdated: Bool = false
+    
+    // Список куплених світів
+    @Published var purchasedWorlds: Set<Int> {
+        didSet {
+            UserDefaults.standard.set(Array(purchasedWorlds), forKey: "purchasedWorlds")
+            UserDefaults.standard.synchronize()
+        }
+    }
+    
+    // Вибраний світ
+    @Published var selectedWorldId: Int {
+        didSet {
+            UserDefaults.standard.set(selectedWorldId, forKey: "selectedWorldId")
+            UserDefaults.standard.synchronize()
+        }
+    }
+    
     init() {
         self.isSoundOn = UserDefaults.standard.object(forKey: "isSoundOn") as? Bool ?? true
+        
+        // Ініціалізація куплених світів
+        let savedPurchased = UserDefaults.standard.array(forKey: "purchasedWorlds") as? [Int] ?? []
+        self.purchasedWorlds = Set(savedPurchased)
+        
+        // Ініціалізація вибраного світу
+        let savedSelected = UserDefaults.standard.integer(forKey: "selectedWorldId")
+        if savedSelected == 0 {
+            // Якщо нічого не збережено, вибираємо перший розблокований рівень
+            self.selectedWorldId = WorldModel.sampleWorlds.first { $0.isUnlocked }?.id ?? 1
+        } else {
+            self.selectedWorldId = savedSelected
+        }
         
         // Ініціалізація індексу світу
         let savedIndex = UserDefaults.standard.integer(forKey: "currentWorldIndex")
@@ -138,8 +170,52 @@ class GameState: ObservableObject {
     func buyLevel() -> Bool {
         if canAfford(currentLevelPrice) {
             totalScore -= currentLevelPrice
+            unlockCurrentWorld()
             return true
         }
         return false
+    }
+    
+    // Перевірка чи світ куплений
+    func isWorldPurchased(_ worldId: Int) -> Bool {
+        return purchasedWorlds.contains(worldId)
+    }
+    
+    // Перевірка чи світ вибраний
+    func isWorldSelected(_ worldId: Int) -> Bool {
+        return selectedWorldId == worldId
+    }
+    
+    // Вибір світу
+    func selectWorld(_ worldId: Int) {
+        if isWorldPurchased(worldId) {
+            selectedWorldId = worldId
+        }
+    }
+    
+    // Розблокування поточного світу
+    private func unlockCurrentWorld() {
+        let worldId = currentWorld.id
+        
+        // Додаємо світ до куплених
+        purchasedWorlds.insert(worldId)
+        
+        // Оновлюємо модель світу
+        if let index = WorldModel.sampleWorlds.firstIndex(where: { $0.id == worldId }) {
+            WorldModel.sampleWorlds[index] = WorldModel(
+                id: worldId,
+                name: currentWorld.name,
+                isUnlocked: true,
+                unlockedImageName: currentWorld.unlockedImageName,
+                lockedImageName: currentWorld.lockedImageName,
+                backgroundImageName: currentWorld.backgroundImageName
+            )
+        }
+        
+        // Робимо цей світ вибраним (видаляємо попередній вибір)
+        selectedWorldId = worldId
+        
+        // Тригеримо оновлення UI
+        worldsUpdated.toggle()
     }
 }
