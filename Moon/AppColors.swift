@@ -30,5 +30,6 @@ extension Color {
 struct AppColors {
     struct Text {
         static let primary = Color(hex: "#BCFF00")
+        static let brightGreen = Color(hex: "#BCFF00")
     }
 }

@@ -21,6 +21,12 @@ struct PlayView: View {
         return currentWorldIndex == savedIndex
     }
     
+    // Загальна кількість балів (за замовчуванням 0)
+    private var totalScore: Int {
+        let savedScore = UserDefaults.standard.integer(forKey: "totalScore")
+        return savedScore == 0 ? 0 : savedScore
+    }
+    
     // Функції перемикання
     private func goToPreviousWorld() {
         if currentWorldIndex > 0 {
@@ -39,6 +45,17 @@ struct PlayView: View {
     // Збереження індексу в UserDefaults
     private func saveCurrentWorldIndex() {
         UserDefaults.standard.set(currentWorldIndex, forKey: "currentWorldIndex")
+    }
+    
+    // Збереження балів в UserDefaults
+    private func saveTotalScore(_ score: Int) {
+        UserDefaults.standard.set(score, forKey: "totalScore")
+    }
+    
+    // Додавання балів до загальної суми
+    private func addScore(_ points: Int) {
+        let newTotal = totalScore + points
+        saveTotalScore(newTotal)
     }
 
     var body: some View {
@@ -97,10 +114,10 @@ struct PlayView: View {
                                                         .frame(width: 60, height: 60)
                                                         .offset(x: 40)
                                                 } else {
-                                                    Text("Play")
-                                                        .font(.title2)
-                                                        .foregroundColor(.white)
-                                                        .offset(x: 40)
+                                                Text("Play")
+                                                    .font(AppFonts.title2)
+                                                    .foregroundColor(AppColors.Text.brightGreen)
+                                                    .offset(x: 40)
                                                }
                                                 
                                                 
@@ -117,8 +134,8 @@ struct PlayView: View {
                                                     .frame(width: 60, height: 60)
                                             } else {
                                                 Text("0.666")
-                                                    .font(.title2)
-                                                    .foregroundColor(.white)
+                                                    .font(AppFonts.title2)
+                                                    .foregroundColor(AppColors.Text.brightGreen)
                                             }
                                         }
                                     
@@ -156,9 +173,9 @@ struct PlayView: View {
                             Spacer()
                                 
                             
-                            Text("0.666")
-                                .font(.title)
-                                .foregroundColor(.white)
+                            Text("\(totalScore)")
+                                .font(AppFonts.title)
+                                .foregroundColor(AppColors.Text.brightGreen)
                                
                             
                             Spacer()
