@@ -27,25 +27,30 @@ struct GamePlayView: View {
                     
                     HStack(spacing: 20) {
                         
-                        Spacer()
-                        Image("Сurrency - Сoin")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: 40, height: 40)
                         
-                        
-                        Spacer()
-                        Spacer()
-                        
-                        
-                        Text("\(gameState.totalScore)")
+                        Text("00:00")
                             .font(AppFonts.title)
                             .foregroundColor(AppColors.Text.brightGreen)
-                        
+                            .offset(x: 20)
                         
                         Spacer()
+                        Spacer()
+                        
+                        HStack {
+                            Text("\(gameState.totalScore)")
+                                .font(AppFonts.title)
+                                .foregroundColor(AppColors.Text.brightGreen)
+                            
+                            Image("Сurrency - Сoin")
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(width: 30, height: 30)
+                        }
+                        
                     }
+                    .padding(.horizontal, 40)
                 }
+                .padding(.top, 80)
                 
                 Spacer()
                 
@@ -75,6 +80,7 @@ struct GamePlayView: View {
                     }
                     
                     Spacer()
+                    Spacer()
                     
                     HStack {
                         
@@ -99,26 +105,30 @@ struct GamePlayView: View {
                     Spacer()
                     
                 }
-                
-                
-                
-                HStack {
+                ZStack {
+                    HStack {
+                        
+                        Image("Property 1=normal") // rigth arrow
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 70, height: 70)
+                        
+                        
+                        Spacer()
+                        Spacer()
+                        
+                        Image("Right__bottom_button=normal-2") // left arrow
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 70, height: 70)
+                    }
                     
-                    Image("Property 1=normal") // rigth arrow
+                    
+                    Image("barrell 2") // PUSHKA
                         .resizable()
                         .aspectRatio(contentMode: .fit)
-                        .frame(width: 60, height: 60)
-                    
-                    
-                    Spacer()
-                    Spacer()
-                    
-                    
-                    Image("Right__bottom_button=normal-2") // left arrow
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: 60, height: 60)
-                    
+                        .frame(width: 70, height: 70)
+                        .padding(.bottom, 10)
                     
                 }
                 
