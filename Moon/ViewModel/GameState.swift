@@ -14,8 +14,26 @@ class GameState: ObservableObject {
         }
     }
     
+    // Поточний індекс світу
+    @Published var currentWorldIndex: Int {
+        didSet {
+            UserDefaults.standard.set(currentWorldIndex, forKey: "currentWorldIndex")
+            UserDefaults.standard.synchronize()
+        }
+    }
+    
+    // Загальна кількість балів
+    @Published var totalScore: Int {
+        didSet {
+            UserDefaults.standard.set(totalScore, forKey: "totalScore")
+            UserDefaults.standard.synchronize()
+        }
+    }
+    
     init() {
         self.isSoundOn = UserDefaults.standard.object(forKey: "isSoundOn") as? Bool ?? true
+        self.currentWorldIndex = UserDefaults.standard.integer(forKey: "currentWorldIndex") == 0 ? 0 : UserDefaults.standard.integer(forKey: "currentWorldIndex")
+        self.totalScore = UserDefaults.standard.integer(forKey: "totalScore") == 0 ? 5000 : UserDefaults.standard.integer(forKey: "totalScore")
        
         setupAudio()
     }
@@ -51,5 +69,62 @@ class GameState: ObservableObject {
     
     func stopMusic() {
         audioPlayer?.pause()
+    }
+    
+    // MARK: - World Management
+    
+    // Поточний світ
+    var currentWorld: WorldModel {
+        WorldModel.sampleWorlds[currentWorldIndex]
+    }
+    
+    // Перевірка чи поточний індекс збігається з збереженим
+    var isCurrentIndexSaved: Bool {
+        let savedIndex = UserDefaults.standard.integer(forKey: "currentWorldIndex")
+        return currentWorldIndex == savedIndex
+    }
+    
+    // Ціна поточного рівня
+    var currentLevelPrice: Int {
+        return 400 + (currentWorldIndex * 200)
+    }
+    
+    // Функції перемикання світів
+    func goToPreviousWorld() {
+        if currentWorldIndex > 0 {
+            currentWorldIndex -= 1
+        }
+    }
+    
+    func goToNextWorld() {
+        if currentWorldIndex < WorldModel.sampleWorlds.count - 1 {
+            currentWorldIndex += 1
+        }
+    }
+    
+    // MARK: - Score Management
+    
+    // Додавання балів до загальної суми
+    func addScore(_ points: Int) {
+        totalScore += points
+    }
+    
+    // Встановлення конкретної суми балів
+    func setScore(_ score: Int) {
+        totalScore = score
+    }
+    
+    // Перевірка чи достатньо балів для покупки
+    func canAfford(_ price: Int) -> Bool {
+        return totalScore >= price
+    }
+    
+    // Покупка рівня
+    func buyLevel() -> Bool {
+        if canAfford(currentLevelPrice) {
+            totalScore -= currentLevelPrice
+            return true
+        }
+        return false
     }
 }

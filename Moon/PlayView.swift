@@ -6,62 +6,6 @@ struct PlayView: View {
     
     @ObservedObject var gameState: GameState
     @Environment(\.dismiss) private var dismiss
-    
-    // Поточний індекс світу (збереження в UserDefaults)
-    @State private var currentWorldIndex: Int = UserDefaults.standard.integer(forKey: "currentWorldIndex") == 0 ? 0 : UserDefaults.standard.integer(forKey: "currentWorldIndex")
-    
-    // Поточний світ
-    private var currentWorld: WorldModel {
-        WorldModel.sampleWorlds[currentWorldIndex]
-    }
-    
-    // Перевірка чи поточний індекс збігається з збереженим
-    private var isCurrentIndexSaved: Bool {
-        let savedIndex = UserDefaults.standard.integer(forKey: "currentWorldIndex")
-        return currentWorldIndex == savedIndex
-    }
-    
-    // Загальна кількість балів (за замовчуванням 0)
-    private var totalScore: Int {
-        let savedScore = UserDefaults.standard.integer(forKey: "totalScore")
-        return savedScore == 0 ? 0 : savedScore
-    }
-    
-    // Ціна поточного рівня
-    private var currentLevelPrice: Int {
-        return 400 + (currentWorldIndex * 200)
-    }
-    
-    // Функції перемикання
-    private func goToPreviousWorld() {
-        if currentWorldIndex > 0 {
-            currentWorldIndex -= 1
-            saveCurrentWorldIndex()
-        }
-    }
-    
-    private func goToNextWorld() {
-        if currentWorldIndex < WorldModel.sampleWorlds.count - 1 {
-            currentWorldIndex += 1
-            saveCurrentWorldIndex()
-        }
-    }
-    
-    // Збереження індексу в UserDefaults
-    private func saveCurrentWorldIndex() {
-        UserDefaults.standard.set(currentWorldIndex, forKey: "currentWorldIndex")
-    }
-    
-    // Збереження балів в UserDefaults
-    private func saveTotalScore(_ score: Int) {
-        UserDefaults.standard.set(score, forKey: "totalScore")
-    }
-    
-    // Додавання балів до загальної суми
-    private func addScore(_ points: Int) {
-        let newTotal = totalScore + points
-        saveTotalScore(newTotal)
-    }
 
     var body: some View {
         ZStack {
@@ -85,7 +29,7 @@ struct PlayView: View {
                         VStack(alignment: .center, spacing: -10) {
                             
                             
-                            Image(currentWorld.isUnlocked ? currentWorld.unlockedImageName : currentWorld.lockedImageName)
+                            Image(gameState.currentWorld.isUnlocked ? gameState.currentWorld.unlockedImageName : gameState.currentWorld.lockedImageName)
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
                                 .frame(maxWidth: .infinity, maxHeight: 300)
@@ -99,20 +43,20 @@ struct PlayView: View {
                                 
                                 HStack(spacing: 10) {
                                     
-                                    Button(action: goToPreviousWorld) {
+                                    Button(action: gameState.goToPreviousWorld) {
                                         Image("Property 1=normal")
                                             .resizable()
                                             .aspectRatio(contentMode: .fit)
                                             .frame(width: 60, height: 60)
                                     }
-                                    .disabled(currentWorldIndex == 0)
+                                    .disabled(gameState.currentWorldIndex == 0)
                                     
                                     
                                         HStack(spacing: 10) {
                                             
-                                            if currentWorld.isUnlocked {
+                                            if gameState.currentWorld.isUnlocked {
                                                 
-                                                if isCurrentIndexSaved {
+                                                if gameState.isCurrentIndexSaved {
                                                     Image("checkmark top button=Default")
                                                         .resizable()
                                                         .aspectRatio(contentMode: .fit)
@@ -134,23 +78,23 @@ struct PlayView: View {
                                             }
                                             
                                             
-                                            if currentWorld.isUnlocked {
+                                            if gameState.currentWorld.isUnlocked {
                                                 Spacer()
                                                     .frame(width: 60, height: 60)
                                             } else {
-                                                Text("0.666")
+                                                Text("\(gameState.currentLevelPrice)")
                                                     .font(AppFonts.title2)
                                                     .foregroundColor(AppColors.Text.brightGreen)
                                             }
                                         }
                                     
-                                    Button(action: goToNextWorld) {
+                                    Button(action: gameState.goToNextWorld) {
                                         Image("Right__bottom_button=normal-2")
                                             .resizable()
                                             .aspectRatio(contentMode: .fit)
                                             .frame(width: 60, height: 60)
                                     }
-                                    .disabled(currentWorldIndex == WorldModel.sampleWorlds.count - 1)
+                                    .disabled(gameState.currentWorldIndex == WorldModel.sampleWorlds.count - 1)
                                     
                                 }
                             }
@@ -178,7 +122,7 @@ struct PlayView: View {
                             Spacer()
                                 
                             
-                            Text("\(totalScore)")
+                            Text("\(gameState.totalScore)")
                                 .font(AppFonts.title)
                                 .foregroundColor(AppColors.Text.brightGreen)
                                
