@@ -6,6 +6,27 @@ struct PlayView: View {
     
     @ObservedObject var gameState: GameState
     @Environment(\.dismiss) private var dismiss
+    
+    // Поточний індекс світу
+    @State private var currentWorldIndex: Int = 0
+    
+    // Поточний світ
+    private var currentWorld: WorldModel {
+        WorldModel.sampleWorlds[currentWorldIndex]
+    }
+    
+    // Функції перемикання
+    private func goToPreviousWorld() {
+        if currentWorldIndex > 0 {
+            currentWorldIndex -= 1
+        }
+    }
+    
+    private func goToNextWorld() {
+        if currentWorldIndex < WorldModel.sampleWorlds.count - 1 {
+            currentWorldIndex += 1
+        }
+    }
 
     var body: some View {
         ZStack {
@@ -29,6 +50,12 @@ struct PlayView: View {
                         VStack(alignment: .center, spacing: -10) {
                             
                             
+                            Image(currentWorld.isUnlocked ? currentWorld.unlockedImageName : currentWorld.lockedImageName)
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(maxWidth: .infinity, maxHeight: 300)
+                            
+                            
                             ZStack {
                                 Image("button=inactive") // br price
                                     .resizable()
@@ -37,10 +64,13 @@ struct PlayView: View {
                                 
                                 HStack(spacing: 10) {
                                     
-                                    Image("Property 1=normal")
-                                        .resizable()
-                                        .aspectRatio(contentMode: .fit)
-                                        .frame(width: 60, height: 60)
+                                    Button(action: goToPreviousWorld) {
+                                        Image("Property 1=normal")
+                                            .resizable()
+                                            .aspectRatio(contentMode: .fit)
+                                            .frame(width: 60, height: 60)
+                                    }
+                                    .disabled(currentWorldIndex == 0)
                                     
                                     
                                     HStack(spacing: 10) {
@@ -56,10 +86,13 @@ struct PlayView: View {
                                             .foregroundColor(.white)
                                     }
                                     
-                                    Image("Right__bottom_button=normal-2") // rigth
-                                        .resizable()
-                                        .aspectRatio(contentMode: .fit)
-                                        .frame(width: 60, height: 60)
+                                    Button(action: goToNextWorld) {
+                                        Image("Right__bottom_button=normal-2")
+                                            .resizable()
+                                            .aspectRatio(contentMode: .fit)
+                                            .frame(width: 60, height: 60)
+                                    }
+                                    .disabled(currentWorldIndex == WorldModel.sampleWorlds.count - 1)
                                     
                                 }
                             }
