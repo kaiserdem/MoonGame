@@ -1,6 +1,11 @@
 import SwiftUI
 
 
+struct VisualEffectView: UIViewRepresentable {
+    var effect: UIVisualEffect?
+    func makeUIView(context: UIViewRepresentableContext<Self>) -> UIVisualEffectView { UIVisualEffectView() }
+    func updateUIView(_ uiView: UIVisualEffectView, context: UIViewRepresentableContext<Self>) { uiView.effect = effect }
+}
 
 enum PopupState {
     case pause, win, lose
@@ -21,18 +26,11 @@ struct PopupView<Content: View>: View {
     var body: some View {
         ZStack {
             if isPresented {
-                // Заблюрений фон
-//                Color.black.opacity(0.2)
-//                    .ignoresSafeArea()
-//                    .blur(radius: 5)
-                
-                Rectangle()
-                    .fill(.ultraThinMaterial)
+                Color.clear
+                    .background(.ultraThinMaterial)
                     .ignoresSafeArea()
-                    .background(Color.white.opacity(0.001).ignoresSafeArea())
-                    
+                    .blur(radius: 100)
                 
-                // Контент попапу
                 content
                     .transition(.scale.combined(with: .opacity))
                 
@@ -128,6 +126,7 @@ struct PopupView<Content: View>: View {
                     }
                     .padding(.top, 280)
                 }
+                .padding(20)
             }
         }
         .animation(.easeInOut(duration: 0.3), value: isPresented)

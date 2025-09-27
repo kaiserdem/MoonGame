@@ -14,7 +14,7 @@ struct MoonApp: App {
 
     var body: some Scene {
         WindowGroup {
-            DailyView(gameState: gameState)
+            MenuView(gameState: gameState)
             //InfoView()
         }
     }
