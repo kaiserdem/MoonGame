@@ -153,7 +153,7 @@ struct PlayView: View {
                         
                         
                         Button(action: {
-                            gameState.toggleSound()
+                            
                         }) {
                             Image("question_top_button=normal")
                                 .resizable()
@@ -163,7 +163,7 @@ struct PlayView: View {
                         
                         
                         Button(action: {
-                            gameState.toggleSound()
+                            
                         }) {
                             Image("top button=normal")
                                 .resizable()

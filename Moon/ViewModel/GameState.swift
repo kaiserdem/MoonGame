@@ -32,7 +32,16 @@ class GameState: ObservableObject {
     
     init() {
         self.isSoundOn = UserDefaults.standard.object(forKey: "isSoundOn") as? Bool ?? true
-        self.currentWorldIndex = UserDefaults.standard.integer(forKey: "currentWorldIndex") == 0 ? 0 : UserDefaults.standard.integer(forKey: "currentWorldIndex")
+        
+        // Ініціалізація індексу світу
+        let savedIndex = UserDefaults.standard.integer(forKey: "currentWorldIndex")
+        if savedIndex == 0 {
+            // Якщо нічого не збережено, показуємо перший розблокований рівень
+            self.currentWorldIndex = WorldModel.sampleWorlds.firstIndex { $0.isUnlocked } ?? 0
+        } else {
+            self.currentWorldIndex = savedIndex
+        }
+        
         self.totalScore = UserDefaults.standard.integer(forKey: "totalScore") == 0 ? 5000 : UserDefaults.standard.integer(forKey: "totalScore")
        
         setupAudio()
@@ -100,6 +109,12 @@ class GameState: ObservableObject {
         if currentWorldIndex < WorldModel.sampleWorlds.count - 1 {
             currentWorldIndex += 1
         }
+    }
+    
+    // Збереження поточного індексу
+    func saveCurrentWorldIndex() {
+        UserDefaults.standard.set(currentWorldIndex, forKey: "currentWorldIndex")
+        UserDefaults.standard.synchronize()
     }
     
     // MARK: - Score Management
