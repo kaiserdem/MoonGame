@@ -84,5 +84,6 @@ struct InfoView: View {
                 }
             }
         }
+        .navigationBarHidden(true)
     }
 }

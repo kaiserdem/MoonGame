@@ -75,7 +75,7 @@ struct RulesView: View {
                     Image("RULES")
                         .resizable()
                         .aspectRatio(contentMode: .fit)
-                        .frame(width: 90, height: 90)
+                        .frame(width: 120, height: 90)
                         .offset(y: 30)
                     
                     
@@ -83,5 +83,6 @@ struct RulesView: View {
                 }
             }
         }
+        .navigationBarHidden(true)
     }
 }

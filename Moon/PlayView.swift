@@ -6,52 +6,54 @@ struct PlayView: View {
     
     @ObservedObject var gameState: GameState
     @Environment(\.dismiss) private var dismiss
-
+    
     var body: some View {
-        ZStack {
-            Image("26 img")
-                .resizable()
-                .aspectRatio(contentMode: .fill)
-                .ignoresSafeArea()
+        NavigationView {
             
-            VStack(spacing: 0) {
+            ZStack {
+                Image("26 img")
+                    .resizable()
+                    .aspectRatio(contentMode: .fill)
+                    .ignoresSafeArea()
                 
-                Spacer()
-                
-                VStack {
-                    ZStack {
-                        
-                        Image("Pop-up_Text_Frame")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(maxWidth: .infinity)
-                        
-                        VStack(alignment: .center, spacing: -10) {
+                VStack(spacing: 0) {
+                    
+                    Spacer()
+                    
+                    VStack {
+                        ZStack {
                             
-                            
-                            Image(gameState.currentWorld.isUnlocked ? gameState.currentWorld.unlockedImageName : gameState.currentWorld.lockedImageName)
+                            Image("Pop-up_Text_Frame")
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
-                                .frame(maxWidth: .infinity, maxHeight: 300)
+                                .frame(maxWidth: .infinity)
                             
-                            
-                            ZStack {
-                                Image("button=inactive") // br price
+                            VStack(alignment: .center, spacing: -10) {
+                                
+                                
+                                Image(gameState.currentWorld.isUnlocked ? gameState.currentWorld.unlockedImageName : gameState.currentWorld.lockedImageName)
                                     .resizable()
                                     .aspectRatio(contentMode: .fit)
-                                    .frame(maxWidth: .infinity, maxHeight: 80)
+                                    .frame(maxWidth: .infinity, maxHeight: 300)
                                 
-                                HStack(spacing: 10) {
+                                
+                                ZStack {
+                                    Image("button=inactive") // br price
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fit)
+                                        .frame(maxWidth: .infinity, maxHeight: 80)
                                     
-                                    Button(action: gameState.goToPreviousWorld) {
-                                        Image("Property 1=normal")
-                                            .resizable()
-                                            .aspectRatio(contentMode: .fit)
-                                            .frame(width: 60, height: 60)
-                                    }
-                                    .disabled(gameState.currentWorldIndex == 0)
-                                    
-                                    
+                                    HStack(spacing: 10) {
+                                        
+                                        Button(action: gameState.goToPreviousWorld) {
+                                            Image("Property 1=normal")
+                                                .resizable()
+                                                .aspectRatio(contentMode: .fit)
+                                                .frame(width: 60, height: 60)
+                                        }
+                                        .disabled(gameState.currentWorldIndex == 0)
+                                        
+                                        
                                         HStack(spacing: 10) {
                                             
                                             if gameState.currentWorld.isUnlocked {
@@ -63,11 +65,11 @@ struct PlayView: View {
                                                         .frame(width: 60, height: 60)
                                                         .offset(x: 40)
                                                 } else {
-                                                Text("Play")
-                                                    .font(AppFonts.title2)
-                                                    .foregroundColor(AppColors.Text.brightGreen)
-                                                    .offset(x: 40)
-                                               }
+                                                    Text("Play")
+                                                        .font(AppFonts.title2)
+                                                        .foregroundColor(AppColors.Text.brightGreen)
+                                                        .offset(x: 40)
+                                                }
                                                 
                                                 
                                             } else {
@@ -87,100 +89,102 @@ struct PlayView: View {
                                                     .foregroundColor(AppColors.Text.brightGreen)
                                             }
                                         }
-                                    
-                                    Button(action: gameState.goToNextWorld) {
-                                        Image("Right__bottom_button=normal-2")
-                                            .resizable()
-                                            .aspectRatio(contentMode: .fit)
-                                            .frame(width: 60, height: 60)
+                                        
+                                        Button(action: gameState.goToNextWorld) {
+                                            Image("Right__bottom_button=normal-2")
+                                                .resizable()
+                                                .aspectRatio(contentMode: .fit)
+                                                .frame(width: 60, height: 60)
+                                        }
+                                        .disabled(gameState.currentWorldIndex == WorldModel.sampleWorlds.count - 1)
+                                        
                                     }
-                                    .disabled(gameState.currentWorldIndex == WorldModel.sampleWorlds.count - 1)
-                                    
                                 }
+                                
                             }
-                            
                         }
+                        
+                        
+                        ZStack {
+                            Image("score_header_frame") // bgr curren user moneu
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(maxWidth: .infinity)
+                            
+                            HStack(spacing: 20) {
+                                
+                                Spacer()
+                                Image("Сurrency - Сoin")
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(width: 40, height: 40)
+                                
+                                
+                                Spacer()
+                                Spacer()
+                                
+                                
+                                Text("\(gameState.totalScore)")
+                                    .font(AppFonts.title)
+                                    .foregroundColor(AppColors.Text.brightGreen)
+                                
+                                
+                                Spacer()
+                            }
+                        }
+                        
                     }
-                    
                     
                     ZStack {
-                        Image("score_header_frame") // bgr curren user moneu
+                        Image("Menu_Footer")
                             .resizable()
                             .aspectRatio(contentMode: .fit)
-                            .frame(maxWidth: .infinity)
+                            .frame(maxWidth: .infinity, maxHeight: 150)
+                            .offset(y: 20)
+                        //.clipped()
                         
-                        HStack(spacing: 20) {
+                        HStack {
+                            Button(action: {
+                                dismiss()
+                            }) {
+                                Image("Component 33")
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(width: 70, height: 70)
+                            }
                             
-                            Spacer()
-                            Image("Сurrency - Сoin")
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                                .frame(width: 40, height: 40)
-                                
                             
-                            Spacer()
-                            Spacer()
-                                
                             
-                            Text("\(gameState.totalScore)")
-                                .font(AppFonts.title)
-                                .foregroundColor(AppColors.Text.brightGreen)
-                               
                             
-                            Spacer()
+                            
+                            NavigationLink(destination: InfoView()) {
+                                Image("question_top_button=normal")
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(height: 80)
+                            }
+                            .buttonStyle(PlainButtonStyle())
+                           
+                            
+                            NavigationLink(destination: RulesView()) {
+                                Image("top button=normal")
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(height: 80)
+                            }
+                            .buttonStyle(PlainButtonStyle())
+                           
                         }
+                        .padding(.top, 50)
+                        
                     }
                     
-                }
-                
-                ZStack {
-                    Image("Menu_Footer")
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(maxWidth: .infinity, maxHeight: 150)
-                        .offset(y: 20)
-                    //.clipped()
-                    
-                    HStack {
-                        Button(action: {
-                            dismiss()
-                        }) {
-                            Image("Component 33")
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                                .frame(width: 70, height: 70)
-                        }
-                        
-                        
-                        Button(action: {
-                            
-                        }) {
-                            Image("question_top_button=normal")
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                                .frame(width: 70, height: 70)
-                        }
-                        
-                        
-                        Button(action: {
-                            
-                        }) {
-                            Image("top button=normal")
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                                .frame(width: 70, height: 70)
-                        }
-                        
-                        
-                    }
-                    .padding(.top, 50)
                     
                 }
-                
-                
             }
+            .navigationBarHidden(true)
+            
         }
         .navigationBarHidden(true)
-
     }
 }
