@@ -43,7 +43,7 @@ struct PlayView: View {
                                         .aspectRatio(contentMode: .fit)
                                         .frame(maxWidth: .infinity, maxHeight: 80)
                                     
-                                    HStack(spacing: 10) {
+                                    HStack(spacing: 150) {
                                         
                                         Button(action: gameState.goToPreviousWorld) {
                                             Image("Property 1=normal")
@@ -54,41 +54,7 @@ struct PlayView: View {
                                         .disabled(gameState.currentWorldIndex == 0)
                                         
                                         
-                                        HStack(spacing: 10) {
-                                            
-                                            if gameState.currentWorld.isUnlocked {
-                                                
-                                                if gameState.isCurrentIndexSaved {
-                                                    Image("checkmark top button=Default")
-                                                        .resizable()
-                                                        .aspectRatio(contentMode: .fit)
-                                                        .frame(width: 60, height: 60)
-                                                        .offset(x: 40)
-                                                } else {
-                                                    Text("Play")
-                                                        .font(AppFonts.title2)
-                                                        .foregroundColor(AppColors.Text.brightGreen)
-                                                        .offset(x: 40)
-                                                }
-                                                
-                                                
-                                            } else {
-                                                Image("Сurrency - Сoin")
-                                                    .resizable()
-                                                    .aspectRatio(contentMode: .fit)
-                                                    .frame(width: 30, height: 30)
-                                            }
-                                            
-                                            
-                                            if gameState.currentWorld.isUnlocked {
-                                                Spacer()
-                                                    .frame(width: 60, height: 60)
-                                            } else {
-                                                Text("\(gameState.currentLevelPrice)")
-                                                    .font(AppFonts.title2)
-                                                    .foregroundColor(AppColors.Text.brightGreen)
-                                            }
-                                        }
+                                        
                                         
                                         Button(action: gameState.goToNextWorld) {
                                             Image("Right__bottom_button=normal-2")
@@ -99,8 +65,44 @@ struct PlayView: View {
                                         .disabled(gameState.currentWorldIndex == WorldModel.sampleWorlds.count - 1)
                                         
                                     }
+                                    
+                                    HStack(spacing: 10) {
+                                        
+                                        if gameState.currentWorld.isUnlocked {
+                                            
+                                            if gameState.isCurrentIndexSaved {
+                                                Image("checkmark top button=Default")
+                                                    .resizable()
+                                                    .aspectRatio(contentMode: .fit)
+                                                    .frame(width: 60, height: 60)
+                                                    .offset(x: 40)
+                                            } else {
+                                                Text("Play")
+                                                    .font(AppFonts.title2)
+                                                    .foregroundColor(AppColors.Text.brightGreen)
+                                                    .offset(x: 40)
+                                            }
+                                            
+                                            
+                                        } else {
+                                            Image("Сurrency - Сoin")
+                                                .resizable()
+                                                .aspectRatio(contentMode: .fit)
+                                                .frame(width: 30, height: 30)
+                                        }
+                                        
+                                        
+                                        if gameState.currentWorld.isUnlocked {
+                                            Spacer()
+                                                .frame(width: 60, height: 60)
+                                        } else {
+                                            Text("\(gameState.currentLevelPrice)")
+                                                .font(AppFonts.title2)
+                                                .foregroundColor(AppColors.Text.brightGreen)
+                                        }
+                                    }
                                 }
-                                
+                                .frame(width: 400)
                             }
                         }
                         
@@ -164,7 +166,7 @@ struct PlayView: View {
                                     .frame(height: 80)
                             }
                             .buttonStyle(PlainButtonStyle())
-                           
+                            
                             
                             NavigationLink(destination: RulesView()) {
                                 Image("top button=normal")
@@ -173,7 +175,7 @@ struct PlayView: View {
                                     .frame(height: 80)
                             }
                             .buttonStyle(PlainButtonStyle())
-                           
+                            
                         }
                         .padding(.top, 50)
                         
