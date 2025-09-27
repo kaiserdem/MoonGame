@@ -16,54 +16,111 @@ struct GamePlayView: View {
             
             
             VStack(spacing: 0) {
-                Image("Daily daily header frame")
-                    .resizable()
-                    .aspectRatio(contentMode: .fill)
-                    .frame(maxWidth: .infinity, maxHeight: 120)
-                    .offset(y: -10)
-                   
+               
+                Spacer()
                 
+                ZStack {
+                    Image("score_header_frame") // bgr curren user moneu
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(maxWidth: .infinity)
+                    
+                    HStack(spacing: 20) {
+                        
+                        Spacer()
+                        Image("Сurrency - Сoin")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 40, height: 40)
+                        
+                        
+                        Spacer()
+                        Spacer()
+                        
+                        
+                        Text("\(gameState.totalScore)")
+                            .font(AppFonts.title)
+                            .foregroundColor(AppColors.Text.brightGreen)
+                        
+                        
+                        Spacer()
+                    }
+                }
                 
-                VStack {
+                Spacer()
+                
+                VStack {// border
+                    
+                    Spacer()
+                    Spacer()
+                    
+                    HStack {
+                        
+                        Image("Bounce_Barrier_01")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 60, height: 90)
+                        
+                        
+                        Spacer()
+                        Spacer()
+                        
+                        
+                        Image("Bounce_Barrier_02")
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 60, height: 90)
+                        
+                        
+                    }
                     
                     Spacer()
                     
-                    Button(action: {
-                        showPopup.toggle()
-                    }) {
-                        Image("Play_Button")
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(height: 90)
-                    }
-                    
-                    
-                    
-                    Button(action: {
+                    HStack {
                         
-                    }) {
-                        Image("Store_Button")
+                        Image("Bounce_Barrier_01")
                             .resizable()
                             .aspectRatio(contentMode: .fit)
-                            .frame(height: 90)
-                    }
-                    
-                    Button(action: {
+                            .frame(width: 60, height: 90)
                         
-                    }) {
-                        Image("Exit_Button")
+                        
+                        Spacer()
+                        Spacer()
+                        
+                        
+                        Image("Bounce_Barrier_02")
                             .resizable()
                             .aspectRatio(contentMode: .fit)
-                            .frame(height: 90)
+                            .frame(width: 60, height: 90)
+                        
+                        
                     }
-                    
                     
                     Spacer()
                     
                 }
                 
                 
-                Spacer()
+                
+                HStack {
+                    
+                    Image("Property 1=normal") // rigth arrow
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 60, height: 60)
+                    
+                    
+                    Spacer()
+                    Spacer()
+                    
+                    
+                    Image("Right__bottom_button=normal-2") // left arrow
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 60, height: 60)
+                    
+                    
+                }
                 
                 ZStack {
                     Image("Menu_Footer")
@@ -97,7 +154,7 @@ struct GamePlayView: View {
                         Button(action: {
                             gameState.toggleSound()
                         }) {
-                            Image(gameState.isSoundOn ? "sound button=normal" : "Sound_off=normal")
+                            Image("top button=normal")
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
                                 .frame(width: 70, height: 70)
@@ -114,5 +171,6 @@ struct GamePlayView: View {
                
             }
         }
+        .navigationBarHidden(true)
     }
 }

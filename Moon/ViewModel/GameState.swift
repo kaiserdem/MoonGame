@@ -58,25 +58,48 @@ class GameState: ObservableObject {
         
         // Ініціалізація вибраного світу
         let savedSelected = UserDefaults.standard.integer(forKey: "selectedWorldId")
-        if savedSelected == 0 {
-            // Якщо нічого не збережено, вибираємо перший розблокований рівень
-            self.selectedWorldId = WorldModel.sampleWorlds.first { $0.isUnlocked }?.id ?? 1
-        } else {
-            self.selectedWorldId = savedSelected
-        }
+        self.selectedWorldId = savedSelected == 0 ? 1 : savedSelected
         
         // Ініціалізація індексу світу
         let savedIndex = UserDefaults.standard.integer(forKey: "currentWorldIndex")
-        if savedIndex == 0 {
-            // Якщо нічого не збережено, показуємо перший розблокований рівень
-            self.currentWorldIndex = WorldModel.sampleWorlds.firstIndex { $0.isUnlocked } ?? 0
-        } else {
-            self.currentWorldIndex = savedIndex
-        }
+        self.currentWorldIndex = savedIndex == 0 ? 0 : savedIndex
         
         self.totalScore = UserDefaults.standard.integer(forKey: "totalScore") == 0 ? 5000 : UserDefaults.standard.integer(forKey: "totalScore")
+        
+        // Завантажуємо збережені світи після ініціалізації всіх властивостей
+        loadSavedWorlds()
+        
+        // Оновлюємо вибраний світ після завантаження
+        if selectedWorldId == 1 {
+            self.selectedWorldId = WorldModel.sampleWorlds.first { $0.isUnlocked }?.id ?? 1
+        }
+        
+        // Оновлюємо індекс світу після завантаження
+        if currentWorldIndex == 0 {
+            self.currentWorldIndex = WorldModel.sampleWorlds.firstIndex { $0.isUnlocked } ?? 0
+        }
        
         setupAudio()
+    }
+    
+    // Завантаження збережених світів
+    private func loadSavedWorlds() {
+        print("Завантаження збережених світів: \(purchasedWorlds)")
+        
+        for (index, world) in WorldModel.sampleWorlds.enumerated() {
+            if purchasedWorlds.contains(world.id) {
+                print("Розблоковуємо світ: \(world.name) (ID: \(world.id))")
+                // Оновлюємо світ як розблокований
+                WorldModel.sampleWorlds[index] = WorldModel(
+                    id: world.id,
+                    name: world.name,
+                    isUnlocked: true,
+                    unlockedImageName: world.unlockedImageName,
+                    lockedImageName: world.lockedImageName,
+                    backgroundImageName: world.backgroundImageName
+                )
+            }
+        }
     }
     
     private func setupAudio() {
@@ -197,8 +220,11 @@ class GameState: ObservableObject {
     private func unlockCurrentWorld() {
         let worldId = currentWorld.id
         
+        print("Розблоковуємо світ: \(currentWorld.name) (ID: \(worldId))")
+        
         // Додаємо світ до куплених
         purchasedWorlds.insert(worldId)
+        print("Додано до куплених: \(purchasedWorlds)")
         
         // Оновлюємо модель світу
         if let index = WorldModel.sampleWorlds.firstIndex(where: { $0.id == worldId }) {
@@ -210,10 +236,12 @@ class GameState: ObservableObject {
                 lockedImageName: currentWorld.lockedImageName,
                 backgroundImageName: currentWorld.backgroundImageName
             )
+            print("Оновлено модель світу: \(WorldModel.sampleWorlds[index].name)")
         }
         
         // Робимо цей світ вибраним (видаляємо попередній вибір)
         selectedWorldId = worldId
+        print("Вибрано світ: \(selectedWorldId)")
         
         // Тригеримо оновлення UI
         worldsUpdated.toggle()

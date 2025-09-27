@@ -77,10 +77,18 @@ struct PlayView: View {
                                                     .frame(width: 60, height: 60)
                                                     .offset(x: 40)
                                             } else {
-                                                Text("Play")
-                                                    .font(AppFonts.title2)
-                                                    .foregroundColor(AppColors.Text.brightGreen)
-                                                    .offset(x: 40)
+                                                
+                                                
+                                                NavigationLink(destination: GamePlayView(gameState: gameState)) {
+                                                    Image("play bottom button=normal")
+                                                        .resizable()
+                                                        .aspectRatio(contentMode: .fit)
+                                                        .frame(width: 60, height: 60)
+                                                        .offset(x: 40)
+                                                }
+                                                .buttonStyle(PlainButtonStyle())
+                                                
+                                               
                                             }
                                             
                                             
@@ -101,7 +109,12 @@ struct PlayView: View {
                                                     .foregroundColor(AppColors.Text.brightGreen)
                                                     .onTapGesture {
                                                         if !gameState.currentWorld.isUnlocked {
-                                                            gameState.buyLevel()
+                                                            let success = gameState.buyLevel()
+                                                            if success {
+                                                                print("Світ успішно куплено!")
+                                                            } else {
+                                                                print("Недостатньо балів для покупки")
+                                                            }
                                                         }
                                                     }
                                         }
@@ -154,17 +167,11 @@ struct PlayView: View {
                         //.clipped()
                         
                         HStack {
-                            Button(action: {
-                                dismiss()
-                            }) {
-                                Image("Component 33")
+                            
+                                Image("play bottom button=normal")
                                     .resizable()
                                     .aspectRatio(contentMode: .fit)
                                     .frame(width: 70, height: 70)
-                            }
-                            
-                            
-                            
                             
                             
                             NavigationLink(destination: InfoView()) {
