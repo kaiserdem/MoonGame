@@ -30,7 +30,7 @@ struct GamePlayView: View {
                         
                         Text("00:00")
                             .font(AppFonts.title)
-                            .foregroundColor(AppColors.Text.brightGreen)
+                            .foregroundColor(.white)
                             .offset(x: 20)
                         
                         Spacer()
@@ -39,7 +39,7 @@ struct GamePlayView: View {
                         HStack {
                             Text("\(gameState.totalScore)")
                                 .font(AppFonts.title)
-                                .foregroundColor(AppColors.Text.brightGreen)
+                                .foregroundColor(.white)
                             
                             Image("Сurrency - Сoin")
                                 .resizable()
@@ -50,7 +50,7 @@ struct GamePlayView: View {
                     }
                     .padding(.horizontal, 40)
                 }
-                .padding(.top, 80)
+                .padding(.top, 50)
                 
                 Spacer()
                 
@@ -105,6 +105,10 @@ struct GamePlayView: View {
                     Spacer()
                     
                 }
+                
+                Spacer()
+                Spacer()
+                
                 ZStack {
                     HStack {
                         
@@ -131,6 +135,7 @@ struct GamePlayView: View {
                         .padding(.bottom, 10)
                     
                 }
+                .padding(.bottom, -50)
                 
                 ZStack {
                     Image("Menu_Footer")
