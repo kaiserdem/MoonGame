@@ -7,25 +7,38 @@ struct PlayView: View {
     @ObservedObject var gameState: GameState
     @Environment(\.dismiss) private var dismiss
     
-    // Поточний індекс світу
-    @State private var currentWorldIndex: Int = 0
+    // Поточний індекс світу (збереження в UserDefaults)
+    @State private var currentWorldIndex: Int = UserDefaults.standard.integer(forKey: "currentWorldIndex") == 0 ? 1 : UserDefaults.standard.integer(forKey: "currentWorldIndex")
     
     // Поточний світ
     private var currentWorld: WorldModel {
         WorldModel.sampleWorlds[currentWorldIndex]
     }
     
+    // Перевірка чи поточний індекс збігається з збереженим
+    private var isCurrentIndexSaved: Bool {
+        let savedIndex = UserDefaults.standard.integer(forKey: "currentWorldIndex")
+        return currentWorldIndex == savedIndex
+    }
+    
     // Функції перемикання
     private func goToPreviousWorld() {
         if currentWorldIndex > 0 {
             currentWorldIndex -= 1
+            saveCurrentWorldIndex()
         }
     }
     
     private func goToNextWorld() {
         if currentWorldIndex < WorldModel.sampleWorlds.count - 1 {
             currentWorldIndex += 1
+            saveCurrentWorldIndex()
         }
+    }
+    
+    // Збереження індексу в UserDefaults
+    private func saveCurrentWorldIndex() {
+        UserDefaults.standard.set(currentWorldIndex, forKey: "currentWorldIndex")
     }
 
     var body: some View {
@@ -76,13 +89,26 @@ struct PlayView: View {
                                         HStack(spacing: 10) {
                                             
                                             if currentWorld.isUnlocked {
-                                                Spacer()
-                                                    .frame(width: 60, height: 60)
+                                                
+                                                if isCurrentIndexSaved {
+                                                    Image("checkmark top button=Default")
+                                                        .resizable()
+                                                        .aspectRatio(contentMode: .fit)
+                                                        .frame(width: 60, height: 60)
+                                                        .offset(x: 40)
+                                                } else {
+                                                    Text("Play")
+                                                        .font(.title2)
+                                                        .foregroundColor(.white)
+                                                        .offset(x: 40)
+                                               }
+                                                
+                                                
                                             } else {
                                                 Image("Сurrency - Сoin")
                                                     .resizable()
                                                     .aspectRatio(contentMode: .fit)
-                                                    .frame(width: 60, height: 60)
+                                                    .frame(width: 30, height: 30)
                                             }
                                             
                                             
@@ -117,17 +143,25 @@ struct PlayView: View {
                             .aspectRatio(contentMode: .fit)
                             .frame(maxWidth: .infinity)
                         
-                        HStack(spacing: 100) {
+                        HStack(spacing: 20) {
+                            
+                            Spacer()
                             Image("Сurrency - Сoin")
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
                                 .frame(width: 40, height: 40)
-                                .offset(x: 40)
+                                
+                            
+                            Spacer()
+                            Spacer()
                                 
                             
                             Text("0.666")
                                 .font(.title)
                                 .foregroundColor(.white)
+                               
+                            
+                            Spacer()
                         }
                     }
                     

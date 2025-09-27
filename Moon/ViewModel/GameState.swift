@@ -21,7 +21,7 @@ class GameState: ObservableObject {
     }
     
     private func setupAudio() {
-        guard let url = Bundle.main.url(forResource: "48bb90af8e1e401", withExtension: "mp3") else {
+        guard let url = Bundle.main.url(forResource: "cf0fc01247f4fc1", withExtension: "mp3") else {
             return
         }
         
