@@ -73,18 +73,28 @@ struct PlayView: View {
                                     .disabled(currentWorldIndex == 0)
                                     
                                     
-                                    HStack(spacing: 10) {
-                                        Image("Сurrency - Сoin")
-                                            .resizable()
-                                            .aspectRatio(contentMode: .fit)
-                                            .frame(width: 60, height: 60)
-                                            //.offset(x: 40)
-                                        
-                                        
-                                        Text("0.666")
-                                            .font(.title2)
-                                            .foregroundColor(.white)
-                                    }
+                                        HStack(spacing: 10) {
+                                            
+                                            if currentWorld.isUnlocked {
+                                                Spacer()
+                                                    .frame(width: 60, height: 60)
+                                            } else {
+                                                Image("Сurrency - Сoin")
+                                                    .resizable()
+                                                    .aspectRatio(contentMode: .fit)
+                                                    .frame(width: 60, height: 60)
+                                            }
+                                            
+                                            
+                                            if currentWorld.isUnlocked {
+                                                Spacer()
+                                                    .frame(width: 60, height: 60)
+                                            } else {
+                                                Text("0.666")
+                                                    .font(.title2)
+                                                    .foregroundColor(.white)
+                                            }
+                                        }
                                     
                                     Button(action: goToNextWorld) {
                                         Image("Right__bottom_button=normal-2")
