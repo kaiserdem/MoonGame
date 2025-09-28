@@ -264,19 +264,20 @@ class GameState: ObservableObject {
     
     func shootBall() {
         if !isBallActive {
-            // Початкова позиція кульки (з позиції гармати внизу екрана)
-            // Y = 0 означає низ екрана, позитивні значення - вище
+            // Початкова позиція кульки (з позиції гармати)
             ballPosition = CGPoint(x: cannonPosition, y: 50)
             
-            // Випадковий кут від -20 до +20 градусів (від вертикалі вгору)
-            let randomAngle = Double.random(in: -20...20)
-            let angleInRadians = randomAngle * .pi / 180
+            // Випадковий кут у градусах (як у прототипі)
+            let angleDegrees = Double.random(in: 80...100)
+            let angleRadians = angleDegrees * .pi / 180
             
-            // Швидкість кульки з урахуванням кута (вгору)
-            let speed: Double = 30
+            // Початкова швидкість (як у прототипі)
+            let initialSpeed: Double = 15
+            
+            // Початкові компоненти швидкості (як у прототипі)
             ballVelocity = CGPoint(
-                x: sin(angleInRadians) * speed,  // горизонтальне зміщення
-                y: cos(angleInRadians) * speed   // вертикальна швидкість вгору (позитивна)
+                x: initialSpeed * cos(angleRadians),  // горизонтальна швидкість
+                y: -initialSpeed * sin(angleRadians)  // вертикальна швидкість (від'ємна = вгору)
             )
             
             isBallActive = true
@@ -285,15 +286,27 @@ class GameState: ObservableObject {
     
     func updateBallPosition() {
         if isBallActive {
-            // Оновлюємо позицію кульки
+            // Гравітація (вага кульки) - тягне вниз (як у прототипі)
+            ballVelocity.y += 0.5
+            
+            // Оновлюємо позицію кульки (як у прототипі)
             ballPosition.x += ballVelocity.x
             ballPosition.y += ballVelocity.y
             
-            // Гравітація (вага кульки) - тягне вниз
-            ballVelocity.y -= 0.5
+            // Відбиття від бокових перешкод
+            if ballPosition.x < -120 || ballPosition.x > 120 {
+                ballVelocity.x = -ballVelocity.x * 0.8  // відбиття з втратою енергії
+                ballPosition.x = ballPosition.x < -120 ? -120 : 120  // виправляємо позицію
+            }
             
-            // Якщо кулька впала вниз або вилетіла за межі, деактивуємо її
-            if ballPosition.y < 0 || ballPosition.x < -300 || ballPosition.x > 300 {
+            // Відбиття від верхніх перешкод (приблизно на висоті 400-500)
+            if ballPosition.y > 400 {
+                ballVelocity.y = -ballVelocity.y * 0.8  // відбиття з втратою енергії
+                ballPosition.y = 400  // виправляємо позицію
+            }
+            
+            // Якщо кулька впала вниз, деактивуємо її
+            if ballPosition.y < 0 {
                 isBallActive = false
             }
         }

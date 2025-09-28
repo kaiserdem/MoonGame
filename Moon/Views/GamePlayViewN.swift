@@ -1,34 +1,29 @@
+
+
 import SwiftUI
 
-struct GamePlayView: View {
+struct GamePlayView2: View {
     
     @ObservedObject var gameState: GameState
     @State var showPopup = false
     
-    @State private var ballPosition: CGPoint = CGPoint(x: 200, y: 600)
-    @State private var vx: CGFloat = 0
-    @State private var vy: CGFloat = 0
-    @State private var isFlying = false
-    
-    let gravity: CGFloat = 0.5
-    let initialSpeed: CGFloat = 30
     
     var body: some View {
         ZStack {
-            
             Image(gameState.selectedWorld.backgroundImageName)
                 .resizable()
                 .aspectRatio(contentMode: .fill)
                 .ignoresSafeArea()
                 .blur(radius: 2)
+
             
             
-            VStack {
+            VStack(spacing: 0) {
+               
                 Spacer()
                 
-                
                 ZStack {
-                    Image("score_header_frame") // верхне меню
+                    Image("score_header_frame") // bgr curren user moneu
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                         .frame(maxWidth: .infinity)
@@ -58,11 +53,11 @@ struct GamePlayView: View {
                     }
                     .padding(.horizontal, 40)
                 }
-                .padding(.top, 50)  // верхне меню
+                .padding(.top, 50)
                 
+                Spacer()
                 
-                
-                VStack {   // border
+                VStack {// border
                     
                     Spacer()
                     Spacer()
@@ -74,14 +69,19 @@ struct GamePlayView: View {
                             .aspectRatio(contentMode: .fit)
                             .frame(width: 60, height: 90)
                             .offset(x: -6)
+                        
+                        
                         Spacer()
                         Spacer()
+                        
                         
                         Image("Bounce_Barrier_02")
                             .resizable()
                             .aspectRatio(contentMode: .fit)
                             .frame(width: 60, height: 90)
                             .offset(x: 6)
+                        
+                        
                     }
                     
                     Spacer()
@@ -95,8 +95,10 @@ struct GamePlayView: View {
                             .frame(width: 60, height: 90)
                             .offset(x: -6)
                         
+                        
                         Spacer()
                         Spacer()
+                        
                         
                         Image("Bounce_Barrier_02")
                             .resizable()
@@ -104,21 +106,16 @@ struct GamePlayView: View {
                             .frame(width: 60, height: 90)
                             .offset(x: 6)
                         
+                        
                     }
                     
                     Spacer()
                     
-                }   // border
+                }
                 
+                Spacer()
+                Spacer()
                 
-                
-                Image(gameState.selectedSkin.backgroundImageName) // кулька
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: 30, height: 30)
-                    .position(ballPosition)
-                
-              
                 ZStack {
                     HStack {
                         
@@ -153,19 +150,13 @@ struct GamePlayView: View {
                         .padding(.bottom, 10)
                         .offset(x: gameState.cannonPosition)
                         .onTapGesture {
-                            if !isFlying {
-                                fire()
-                            }
+                            gameState.shootBall()
                         }
                     
                 }
                 .padding(.bottom, -50)
                 
-                
-                
-                
-                
-                ZStack {          // нижнье меню
+                ZStack {
                     Image("Menu_Footer")
                         .resizable()
                         .aspectRatio(contentMode: .fit)
@@ -210,47 +201,27 @@ struct GamePlayView: View {
                     
                 }
             }
-            .navigationBarHidden(true)
-            .onAppear {
-                gameState.startGameTimer()
+            
+            // Кулька
+            if gameState.isBallActive {
+                Image(gameState.selectedSkin.backgroundImageName)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 30, height: 30)
+                    .position(x: gameState.ballPosition.x + UIScreen.main.bounds.width / 2, 
+                             y: UIScreen.main.bounds.height - 100 - gameState.ballPosition.y)
             }
-            .onDisappear {
-                gameState.stopGameTimer()
+            
+            PopupView(isPresented: $showPopup, state: .pause, gameState: gameState) {
+               
             }
         }
-    }
-    
-    func fire() {
-        ballPosition = CGPoint(x: gameState.ballPosition.x + UIScreen.main.bounds.width / 2,
-                               y: UIScreen.main.bounds.height - 100 - gameState.ballPosition.y)
-        
-        let angleDegrees = Double.random(in: 80...100)
-        let angleRadians = angleDegrees * .pi / 180
-        
-        vx = initialSpeed * cos(angleRadians)
-        vy = -initialSpeed * sin(angleRadians)
-        
-        isFlying = true
-        
-        Timer.scheduledTimer(withTimeInterval: 0.016, repeats: true) { timer in
-            vy += gravity
-            ballPosition.x += vx
-            ballPosition.y += vy
-            
-            // Перевіряємо, чи кулька вилетіла за межі екрана
-            if ballPosition.y >= UIScreen.main.bounds.height - 100 ||
-                ballPosition.x < 0 ||
-                ballPosition.x > UIScreen.main.bounds.width {
-                
-                isFlying = false
-                timer.invalidate()
-                
-                // Повертаємо кульку на стартову позицію через 1 секунду
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-                    ballPosition = CGPoint(x: gameState.ballPosition.x + UIScreen.main.bounds.width / 2,
-                                           y: UIScreen.main.bounds.height - 100 - gameState.ballPosition.y)
-                }
-            }
+        .navigationBarHidden(true)
+        .onAppear {
+            gameState.startGameTimer()
+        }
+        .onDisappear {
+            gameState.stopGameTimer()
         }
     }
 }
