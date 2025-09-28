@@ -36,13 +36,7 @@ struct StoreView: View {
                             
                             VStack(alignment: .center, spacing: -10) {
                                 
-                                // Debug print
-                                let _ = print("🔍 StoreView Debug:")
-                                let _ = print("   Current Skin ID: \(gameState.currentSkin.id)")
-                                let _ = print("   Current Skin Index: \(gameState.currentSkinIndex)")
-                                let _ = print("   Is Skin Purchased: \(gameState.isSkinPurchased(gameState.currentSkin.id))")
-                                let _ = print("   Background Image: \(gameState.currentSkin.backgroundImageName)")
-                                let _ = print("   Purchased Skins: \(gameState.purchasedSkins)")
+                               
                                 
                                 Image(gameState.currentSkin.backgroundImageName)
                                     .resizable()
