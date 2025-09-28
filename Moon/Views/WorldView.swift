@@ -106,6 +106,7 @@ struct WorldView: View {
                                         } else {
                                                 Text("\(gameState.currentLevelPrice)")
                                                     .font(AppFonts.title2)
+                                                    .frame(height: 60)
                                                     .foregroundColor(AppColors.Text.brightGreen)
                                                     .onTapGesture {
                                                         if !gameState.currentWorld.isUnlocked {

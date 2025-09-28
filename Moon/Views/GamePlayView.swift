@@ -7,6 +7,7 @@ struct GamePlayView: View {
     @ObservedObject var gameState: GameState
     @State var showPopup = false
     
+    
     var body: some View {
         ZStack {
             Image("26 img")
@@ -147,9 +148,9 @@ struct GamePlayView: View {
                     
                     HStack {
                         Button(action: {
-                            gameState.toggleSound()
+                            gameState.pause()
                         }) {
-                            Image("top button=normal")
+                            Image("play bottom button=normal")
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
                                 .frame(width: 70, height: 70)

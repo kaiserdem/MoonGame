@@ -129,6 +129,10 @@ class GameState: ObservableObject {
         setupAudio()
     }
     
+    func pause() {
+        
+    }
+    
     // Завантаження збережених світів
     private func loadSavedWorlds() {
         print("Завантаження збережених світів: \(purchasedWorlds)")

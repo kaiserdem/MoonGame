@@ -22,7 +22,7 @@ extension SkinModel {
             id: 1,
             unlockedImageName: "daily 15unlok",
             storeImageName: "player skin icon 1",
-            backgroundImageName: "Yplayer_skin_01"
+            backgroundImageName: "player_skin_01"
         ),
         SkinModel(
             id: 2,
