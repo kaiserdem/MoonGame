@@ -223,5 +223,8 @@ struct StoreView: View {
             
         }
         .navigationBarHidden(true)
+        .onAppear {
+            gameState.updateCurrentSkinIndex()
+        }
     }
 }

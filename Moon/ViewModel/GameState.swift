@@ -121,10 +121,8 @@ class GameState: ObservableObject {
             self.selectedSkinId = purchasedSkinId
         }
         
-        // Оновлюємо індекс скіна після завантаження
-        if currentSkinIndex == 0 {
-            self.currentSkinIndex = SkinModel.sampleSkins.firstIndex { $0.id == purchasedSkinId } ?? 0
-        }
+        // Оновлюємо індекс скіна після завантаження - завжди показуємо вибраний скін
+        self.currentSkinIndex = SkinModel.sampleSkins.firstIndex { $0.id == selectedSkinId } ?? 0
        
         setupAudio()
     }
@@ -248,6 +246,11 @@ class GameState: ObservableObject {
         if currentSkinIndex < SkinModel.sampleSkins.count - 1 {
             currentSkinIndex += 1
         }
+    }
+    
+    // Оновлення індексу для показу вибраного скіна
+    func updateCurrentSkinIndex() {
+        currentSkinIndex = SkinModel.sampleSkins.firstIndex { $0.id == selectedSkinId } ?? 0
     }
     
     // Збереження поточного індексу

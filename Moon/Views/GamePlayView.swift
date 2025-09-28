@@ -134,6 +134,9 @@ struct GamePlayView: View {
                         .aspectRatio(contentMode: .fit)
                         .frame(width: 70, height: 70)
                         .padding(.bottom, 10)
+                        .onTapGesture {
+                            
+                        }
                     
                 }
                 .padding(.bottom, -50)
