@@ -37,7 +37,7 @@ struct StoreView: View {
                             VStack(alignment: .center, spacing: -10) {
                                 
                                 
-                                Image("player_skin_01")
+                                Image(gameState.isSkinPurchased(gameState.currentSkin.id) ? gameState.currentSkin.unlockedImageName : gameState.currentSkin.lockedImageName)
                                     .resizable()
                                     .aspectRatio(contentMode: .fit)
                                     .frame(maxWidth: .infinity, maxHeight: 250)
@@ -52,32 +52,32 @@ struct StoreView: View {
                                     
                                     HStack(spacing: 150) {
                                         
-                                        Button(action: gameState.goToPreviousWorld) {
+                                        Button(action: gameState.goToPreviousSkin) {
                                             Image("Property 1=normal")
                                                 .resizable()
                                                 .aspectRatio(contentMode: .fit)
                                                 .frame(width: 60, height: 60)
                                         }
-                                        .disabled(gameState.currentWorldIndex == 0)
+                                        .disabled(gameState.currentSkinIndex == 0)
                                         
                                         
                                         
                                         
-                                        Button(action: gameState.goToNextWorld) {
+                                        Button(action: gameState.goToNextSkin) {
                                             Image("Right__bottom_button=normal-2")
                                                 .resizable()
                                                 .aspectRatio(contentMode: .fit)
                                                 .frame(width: 60, height: 60)
                                         }
-                                        .disabled(gameState.currentWorldIndex == WorldModel.sampleWorlds.count - 1)
+                                        .disabled(gameState.currentSkinIndex == SkinModel.sampleSkins.count - 1)
                                         
                                     }
                                     
                                     HStack(spacing: 10) {
                                         
-                                        if gameState.currentWorld.isUnlocked {
+                                        if gameState.isSkinPurchased(gameState.currentSkin.id) {
                                             
-                                                if gameState.isWorldSelected(gameState.currentWorld.id) {
+                                                if gameState.isSkinSelected(gameState.currentSkin.id) {
                                                 Image("checkmark top button=Default")
                                                     .resizable()
                                                     .aspectRatio(contentMode: .fit)
@@ -86,14 +86,15 @@ struct StoreView: View {
                                             } else {
                                                 
                                                 
-                                                NavigationLink(destination: GamePlayView(gameState: gameState)) {
+                                                Button(action: {
+                                                    gameState.selectSkin(gameState.currentSkin.id)
+                                                }) {
                                                     Image("play bottom button=normal")
                                                         .resizable()
                                                         .aspectRatio(contentMode: .fit)
                                                         .frame(width: 60, height: 60)
                                                         .offset(x: 40)
                                                 }
-                                                .buttonStyle(PlainButtonStyle())
                                                 
                                                
                                             }
@@ -107,18 +108,18 @@ struct StoreView: View {
                                         }
                                         
                                         
-                                        if gameState.currentWorld.isUnlocked {
+                                        if gameState.isSkinPurchased(gameState.currentSkin.id) {
                                             Spacer()
                                                 .frame(width: 60, height: 60)
                                         } else {
-                                                Text("\(gameState.currentLevelPrice)")
+                                                Text("\(gameState.currentSkinPrice)")
                                                     .font(AppFonts.title2)
                                                     .foregroundColor(AppColors.Text.brightGreen)
                                                     .onTapGesture {
-                                                        if !gameState.currentWorld.isUnlocked {
-                                                            let success = gameState.buyLevel()
+                                                        if !gameState.isSkinPurchased(gameState.currentSkin.id) {
+                                                            let success = gameState.buySkin()
                                                             if success {
-                                                                print("Світ успішно куплено!")
+                                                                print("Скін успішно куплено!")
                                                             } else {
                                                                 print("Недостатньо балів для покупки")
                                                             }

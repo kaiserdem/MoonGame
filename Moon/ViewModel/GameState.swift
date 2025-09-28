@@ -49,6 +49,30 @@ class GameState: ObservableObject {
         }
     }
     
+    // Поточний індекс скіна
+    @Published var currentSkinIndex: Int {
+        didSet {
+            UserDefaults.standard.set(currentSkinIndex, forKey: "currentSkinIndex")
+            UserDefaults.standard.synchronize()
+        }
+    }
+    
+    // Список куплених скінів
+    @Published var purchasedSkins: Set<Int> {
+        didSet {
+            UserDefaults.standard.set(Array(purchasedSkins), forKey: "purchasedSkins")
+            UserDefaults.standard.synchronize()
+        }
+    }
+    
+    // Вибраний скін
+    @Published var selectedSkinId: Int {
+        didSet {
+            UserDefaults.standard.set(selectedSkinId, forKey: "selectedSkinId")
+            UserDefaults.standard.synchronize()
+        }
+    }
+    
     init() {
         self.isSoundOn = UserDefaults.standard.object(forKey: "isSoundOn") as? Bool ?? true
         
@@ -64,10 +88,23 @@ class GameState: ObservableObject {
         let savedIndex = UserDefaults.standard.integer(forKey: "currentWorldIndex")
         self.currentWorldIndex = savedIndex == 0 ? 0 : savedIndex
         
+        // Ініціалізація куплених скінів
+        let savedPurchasedSkins = UserDefaults.standard.array(forKey: "purchasedSkins") as? [Int] ?? []
+        self.purchasedSkins = Set(savedPurchasedSkins)
+        
+        // Ініціалізація вибраного скіна
+        let savedSelectedSkin = UserDefaults.standard.integer(forKey: "selectedSkinId")
+        self.selectedSkinId = savedSelectedSkin == 0 ? 1 : savedSelectedSkin
+        
+        // Ініціалізація індексу скіна
+        let savedSkinIndex = UserDefaults.standard.integer(forKey: "currentSkinIndex")
+        self.currentSkinIndex = savedSkinIndex == 0 ? 0 : savedSkinIndex
+        
         self.totalScore = UserDefaults.standard.integer(forKey: "totalScore") == 0 ? 5000 : UserDefaults.standard.integer(forKey: "totalScore")
         
         // Завантажуємо збережені світи після ініціалізації всіх властивостей
         loadSavedWorlds()
+        loadSavedSkins()
         
         // Оновлюємо вибраний світ після завантаження
         if selectedWorldId == 1 {
@@ -77,6 +114,16 @@ class GameState: ObservableObject {
         // Оновлюємо індекс світу після завантаження
         if currentWorldIndex == 0 {
             self.currentWorldIndex = WorldModel.sampleWorlds.firstIndex { $0.isUnlocked } ?? 0
+        }
+        
+        // Оновлюємо вибраний скін після завантаження
+        if selectedSkinId == 1 {
+            self.selectedSkinId = SkinModel.sampleSkins.first { isSkinPurchased($0.id) }?.id ?? 1
+        }
+        
+        // Оновлюємо індекс скіна після завантаження
+        if currentSkinIndex == 0 {
+            self.currentSkinIndex = SkinModel.sampleSkins.firstIndex { isSkinPurchased($0.id) } ?? 0
         }
        
         setupAudio()
@@ -99,6 +146,16 @@ class GameState: ObservableObject {
                     backgroundImageName: world.backgroundImageName
                 )
             }
+        }
+    }
+    
+    // Завантаження збережених скінів
+    private func loadSavedSkins() {
+        print("Завантаження збережених скінів: \(purchasedSkins)")
+        
+        // Перший скін завжди розблокований
+        if !purchasedSkins.contains(1) {
+            purchasedSkins.insert(1)
         }
     }
     
@@ -142,6 +199,11 @@ class GameState: ObservableObject {
         WorldModel.sampleWorlds[currentWorldIndex]
     }
     
+    // Поточний скін
+    var currentSkin: SkinModel {
+        SkinModel.sampleSkins[currentSkinIndex]
+    }
+    
     // Перевірка чи поточний індекс збігається з збереженим
     var isCurrentIndexSaved: Bool {
         let savedIndex = UserDefaults.standard.integer(forKey: "currentWorldIndex")
@@ -151,6 +213,11 @@ class GameState: ObservableObject {
     // Ціна поточного рівня
     var currentLevelPrice: Int {
         return 400 + (currentWorldIndex * 200)
+    }
+    
+    // Ціна поточного скіна
+    var currentSkinPrice: Int {
+        return 300 + (currentSkinIndex * 150)
     }
     
     // Функції перемикання світів
@@ -163,6 +230,19 @@ class GameState: ObservableObject {
     func goToNextWorld() {
         if currentWorldIndex < WorldModel.sampleWorlds.count - 1 {
             currentWorldIndex += 1
+        }
+    }
+    
+    // Функції перемикання скінів
+    func goToPreviousSkin() {
+        if currentSkinIndex > 0 {
+            currentSkinIndex -= 1
+        }
+    }
+    
+    func goToNextSkin() {
+        if currentSkinIndex < SkinModel.sampleSkins.count - 1 {
+            currentSkinIndex += 1
         }
     }
     
@@ -199,6 +279,16 @@ class GameState: ObservableObject {
         return false
     }
     
+    // Покупка скіна
+    func buySkin() -> Bool {
+        if canAfford(currentSkinPrice) {
+            totalScore -= currentSkinPrice
+            unlockCurrentSkin()
+            return true
+        }
+        return false
+    }
+    
     // Перевірка чи світ куплений
     func isWorldPurchased(_ worldId: Int) -> Bool {
         return purchasedWorlds.contains(worldId)
@@ -213,6 +303,23 @@ class GameState: ObservableObject {
     func selectWorld(_ worldId: Int) {
         if isWorldPurchased(worldId) {
             selectedWorldId = worldId
+        }
+    }
+    
+    // Перевірка чи скін куплений
+    func isSkinPurchased(_ skinId: Int) -> Bool {
+        return purchasedSkins.contains(skinId)
+    }
+    
+    // Перевірка чи скін вибраний
+    func isSkinSelected(_ skinId: Int) -> Bool {
+        return selectedSkinId == skinId
+    }
+    
+    // Вибір скіна
+    func selectSkin(_ skinId: Int) {
+        if isSkinPurchased(skinId) {
+            selectedSkinId = skinId
         }
     }
     
@@ -242,6 +349,24 @@ class GameState: ObservableObject {
         // Робимо цей світ вибраним (видаляємо попередній вибір)
         selectedWorldId = worldId
         print("Вибрано світ: \(selectedWorldId)")
+        
+        // Тригеримо оновлення UI
+        worldsUpdated.toggle()
+    }
+    
+    // Розблокування поточного скіна
+    private func unlockCurrentSkin() {
+        let skinId = currentSkin.id
+        
+        print("Розблоковуємо скін: \(skinId)")
+        
+        // Додаємо скін до куплених
+        purchasedSkins.insert(skinId)
+        print("Додано до куплених скінів: \(purchasedSkins)")
+        
+        // Робимо цей скін вибраним
+        selectedSkinId = skinId
+        print("Вибрано скін: \(selectedSkinId)")
         
         // Тригеримо оновлення UI
         worldsUpdated.toggle()

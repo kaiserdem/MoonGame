@@ -37,7 +37,7 @@ struct MenuView: View {
                     
                     
                     
-                    NavigationLink(destination: PlayView(gameState: gameState)) {
+                    NavigationLink(destination: WorldView(gameState: gameState)) {
                         Image("Play_Button")
                             .resizable()
                             .aspectRatio(contentMode: .fit)
