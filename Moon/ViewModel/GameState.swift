@@ -273,7 +273,7 @@ class GameState: ObservableObject {
             let angleInRadians = randomAngle * .pi / 180
             
             // Швидкість кульки з урахуванням кута (вгору)
-            let speed: Double = 15
+            let speed: Double = 30
             ballVelocity = CGPoint(
                 x: sin(angleInRadians) * speed,  // горизонтальне зміщення
                 y: cos(angleInRadians) * speed   // вертикальна швидкість вгору (позитивна)
