@@ -150,7 +150,7 @@ struct GamePlayView: View {
                         .padding(.bottom, 10)
                         .offset(x: gameState.cannonPosition)
                         .onTapGesture {
-                            
+                            gameState.shootBall()
                         }
                     
                 }
@@ -200,6 +200,16 @@ struct GamePlayView: View {
                     .padding(.top, 50)
                     
                 }
+            }
+            
+            // Кулька
+            if gameState.isBallActive {
+                Image(gameState.selectedSkin.backgroundImageName)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 30, height: 30)
+                    .position(x: gameState.ballPosition.x + UIScreen.main.bounds.width / 2, 
+                             y: UIScreen.main.bounds.height - 100 - gameState.ballPosition.y)
             }
             
             PopupView(isPresented: $showPopup, state: .pause, gameState: gameState) {

@@ -34,7 +34,7 @@ class GameState: ObservableObject {
     @Published var worldsUpdated: Bool = false
     
     // Таймер гри
-    @Published var gameTime: Int = 0
+    @Published var gameTime: Double = 0
     private var gameTimer: Timer?
     
     // Стан паузи
@@ -43,6 +43,11 @@ class GameState: ObservableObject {
     // Позиція гармати
     @Published var cannonPosition: CGFloat = 0
     private let maxCannonOffset: CGFloat = 120
+    
+    // Кулька
+    @Published var ballPosition: CGPoint = CGPoint(x: 0, y: 0)
+    @Published var isBallActive: Bool = false
+    @Published var ballVelocity: CGPoint = CGPoint(x: 0, y: 0)
     
     // Список куплених світів
     @Published var purchasedWorlds: Set<Int> {
@@ -210,9 +215,10 @@ class GameState: ObservableObject {
     func startGameTimer() {
         gameTime = 0
         isGamePaused = false
-        gameTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { _ in
+        gameTimer = Timer.scheduledTimer(withTimeInterval: 1.0/60.0, repeats: true) { _ in
             if !self.isGamePaused {
-                self.gameTime += 1
+                self.gameTime += 1.0/60.0
+                self.updateBallPosition()
             }
         }
     }
@@ -254,10 +260,55 @@ class GameState: ObservableObject {
         cannonPosition = 0
     }
     
+    // MARK: - Ball Control
+    
+    func shootBall() {
+        if !isBallActive {
+            // Початкова позиція кульки (з позиції гармати внизу екрана)
+            // Y = 0 означає низ екрана, позитивні значення - вище
+            ballPosition = CGPoint(x: cannonPosition, y: 50)
+            
+            // Випадковий кут від -20 до +20 градусів (від вертикалі вгору)
+            let randomAngle = Double.random(in: -20...20)
+            let angleInRadians = randomAngle * .pi / 180
+            
+            // Швидкість кульки з урахуванням кута (вгору)
+            let speed: Double = 15
+            ballVelocity = CGPoint(
+                x: sin(angleInRadians) * speed,  // горизонтальне зміщення
+                y: cos(angleInRadians) * speed   // вертикальна швидкість вгору (позитивна)
+            )
+            
+            isBallActive = true
+        }
+    }
+    
+    func updateBallPosition() {
+        if isBallActive {
+            // Оновлюємо позицію кульки
+            ballPosition.x += ballVelocity.x
+            ballPosition.y += ballVelocity.y
+            
+            // Гравітація (вага кульки) - тягне вниз
+            ballVelocity.y -= 0.5
+            
+            // Якщо кулька впала вниз або вилетіла за межі, деактивуємо її
+            if ballPosition.y < 0 || ballPosition.x < -300 || ballPosition.x > 300 {
+                isBallActive = false
+            }
+        }
+    }
+    
+    func resetBall() {
+        isBallActive = false
+        ballPosition = CGPoint(x: 0, y: 0)
+        ballVelocity = CGPoint(x: 0, y: 0)
+    }
+    
     // Форматований час для відображення
     var formattedGameTime: String {
-        let minutes = gameTime / 60
-        let seconds = gameTime % 60
+        let minutes = Int(gameTime) / 60
+        let seconds = Int(gameTime) % 60
         return String(format: "%02d:%02d", minutes, seconds)
     }
     
@@ -276,6 +327,11 @@ class GameState: ObservableObject {
     // Поточний скін
     var currentSkin: SkinModel {
         SkinModel.sampleSkins[currentSkinIndex]
+    }
+    
+    // Вибраний скін
+    var selectedSkin: SkinModel {
+        SkinModel.sampleSkins.first { $0.id == selectedSkinId } ?? SkinModel.sampleSkins[0]
     }
     
     // Перевірка чи поточний індекс збігається з збереженим
