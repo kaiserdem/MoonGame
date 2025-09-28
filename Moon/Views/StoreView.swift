@@ -27,13 +27,21 @@ struct StoreView: View {
                                 .aspectRatio(contentMode: .fit)
                                 .frame(maxWidth: .infinity)
                             
+                            
+                            Image("Icon_Square_Frame=normal")
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(maxWidth: .infinity)
+                                .padding(.horizontal, 20)
+                            
                             VStack(alignment: .center, spacing: -10) {
                                 
                                 
-                                Image(gameState.currentWorld.isUnlocked ? gameState.currentWorld.unlockedImageName : gameState.currentWorld.lockedImageName)
+                                Image("player_skin_01")
                                     .resizable()
                                     .aspectRatio(contentMode: .fit)
-                                    .frame(maxWidth: .infinity, maxHeight: 300)
+                                    .frame(maxWidth: .infinity, maxHeight: 250)
+                                    .offset(y: 20)
                                 
                                 
                                 ZStack {
@@ -167,14 +175,20 @@ struct StoreView: View {
                         
                         HStack {
                             
-                                Image("play bottom button=normal")
+                            
+                            Button(action: {
+                                dismiss()
+                            }) {
+                                Image("Component 33")
                                     .resizable()
                                     .aspectRatio(contentMode: .fit)
                                     .frame(width: 70, height: 70)
+                            }
                             
                             
-                            NavigationLink(destination: InfoView()) {
-                                Image("question_top_button=normal")
+                            
+                            NavigationLink(destination: GamePlayView(gameState: gameState)) { // play
+                                Image("play bottom button=normal")
                                     .resizable()
                                     .aspectRatio(contentMode: .fit)
                                     .frame(height: 80)
@@ -182,7 +196,7 @@ struct StoreView: View {
                             .buttonStyle(PlainButtonStyle())
                             
                             
-                            NavigationLink(destination: RulesView()) {
+                            NavigationLink(destination: InfoView()) { //info
                                 Image("top button=normal")
                                     .resizable()
                                     .aspectRatio(contentMode: .fit)

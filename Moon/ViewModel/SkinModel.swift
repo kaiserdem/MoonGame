@@ -7,45 +7,45 @@ struct SkinModel: Identifiable, Codable {
     let lockedImageName: String
     let backgroundImageName: String
     
-    init(id: Int, unlockedImageName: String, lockedImageName: String, backgroundImageName: String) {
+    init(id: Int, unlockedImageName: String, storeImageName: String, backgroundImageName: String) {
         self.id = id
         self.unlockedImageName = unlockedImageName
-        self.lockedImageName = lockedImageName
+        self.lockedImageName = storeImageName
         self.backgroundImageName = backgroundImageName
     }
 }
 
 // Приклад використання:
-extension WorldModel {
-    static var sampleWorlds: [WorldModel] = [
-        WorldModel(
+extension SkinModel {
+    static var sampleSkins: [SkinModel] = [
+        SkinModel(
             id: 1,
             unlockedImageName: "daily 15unlok",
-            lockedImageName: "idaily 15",
+            storeImageName: "player skin icon 1",
             backgroundImageName: "Yplayer_skin_01"
         ),
-        WorldModel(
+        SkinModel(
             id: 2,
             unlockedImageName: "daily 14unlok",
-            lockedImageName: "daily 14",
+            storeImageName: "player skin icon 2",
             backgroundImageName: "player_skin_02"
         ),
-        WorldModel(
+        SkinModel(
             id: 3,
             unlockedImageName: "daily 13unlok",
-            lockedImageName: "daily 13",
+            storeImageName: "player skin icon 3",
             backgroundImageName: "player_skin_03"
         ),
-        WorldModel(
+        SkinModel(
             id: 4,
             unlockedImageName: "daily 17unlok",
-            lockedImageName: "daily 17",
+            storeImageName: "player skin icon 4",
             backgroundImageName: "player_skin_04"
         ),
-        WorldModel(
+        SkinModel(
             id: 5,
             unlockedImageName: "daily 16unlok",
-            lockedImageName: "daily 16",
+            storeImageName: "player skin icon 5",
             backgroundImageName: "player_skin_05"
         )
     ]

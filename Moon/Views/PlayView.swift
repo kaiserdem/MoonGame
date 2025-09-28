@@ -175,21 +175,26 @@ struct PlayView: View {
                             
                             
                             NavigationLink(destination: InfoView()) {
-                                Image("question_top_button=normal")
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fit)
-                                    .frame(height: 80)
-                            }
-                            .buttonStyle(PlainButtonStyle())
-                            
-                            
-                            NavigationLink(destination: RulesView()) {
                                 Image("top button=normal")
                                     .resizable()
                                     .aspectRatio(contentMode: .fit)
                                     .frame(height: 80)
                             }
                             .buttonStyle(PlainButtonStyle())
+                            
+                            
+                            
+                            Button(action: {
+                                dismiss()
+                            }) {
+                                Image("Component 33")
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(width: 70, height: 70)
+                            }
+                            
+                            
+                           
                             
                         }
                         .padding(.top, 50)

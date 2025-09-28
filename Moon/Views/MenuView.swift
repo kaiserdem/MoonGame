@@ -48,15 +48,15 @@ struct MenuView: View {
         
                     
                     
-                    Button(action: {
-                        
-                    }) {
+                    
+                    
+                    NavigationLink(destination: StoreView(gameState: gameState)) {
                         Image("Store_Button")
                             .resizable()
                             .aspectRatio(contentMode: .fit)
                             .frame(height: 100)
                     }
-                    
+                    .buttonStyle(PlainButtonStyle())
                     
                     Spacer()
                     
@@ -74,25 +74,22 @@ struct MenuView: View {
                         //.clipped()
                     
                     HStack {
-                        Button(action: {
-                            gameState.toggleSound()
-                        }) {
+                        NavigationLink(destination: InfoView()) {
                             Image("top button=normal")
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
-                                .frame(width: 70, height: 70)
+                                .frame(height: 80)
                         }
+                        .buttonStyle(PlainButtonStyle())
                         
                         
-                        Button(action: {
-                            gameState.toggleSound()
-                        }) {
+                        NavigationLink(destination: RulesView()) {
                             Image("question_top_button=normal")
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
-                                .frame(width: 70, height: 70)
+                                .frame(height: 80)
                         }
-                        
+                        .buttonStyle(PlainButtonStyle())
                         
                         Button(action: {
                             gameState.toggleSound()

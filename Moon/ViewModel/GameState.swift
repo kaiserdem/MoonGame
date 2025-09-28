@@ -53,8 +53,8 @@ class GameState: ObservableObject {
         self.isSoundOn = UserDefaults.standard.object(forKey: "isSoundOn") as? Bool ?? true
         
         // Ініціалізація куплених світів
-        let savedPurchased = UserDefaults.standard.array(forKey: "purchasedWorlds") as? [Int] ?? []
-        self.purchasedWorlds = Set(savedPurchased)
+        let savedPurchasedWorlds = UserDefaults.standard.array(forKey: "purchasedWorlds") as? [Int] ?? []
+        self.purchasedWorlds = Set(savedPurchasedWorlds)
         
         // Ініціалізація вибраного світу
         let savedSelected = UserDefaults.standard.integer(forKey: "selectedWorldId")
