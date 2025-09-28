@@ -42,7 +42,7 @@ struct StoreView: View {
                                     .resizable()
                                     .aspectRatio(contentMode: .fit)
                                     .frame(maxWidth: .infinity, maxHeight: 250)
-                                    .offset(y: 20)
+                                    .offset(y: 130)
                                     .blur(radius: gameState.isSkinPurchased(gameState.currentSkin.id) ? 0 : 1)
                                     .brightness(gameState.isSkinPurchased(gameState.currentSkin.id) ? 0 : -0.1)
                                     .saturation(gameState.isSkinPurchased(gameState.currentSkin.id) ? 1 : 0.6)
@@ -137,6 +137,7 @@ struct StoreView: View {
                                     }
                                 }
                                 .frame(width: 400)
+                                .padding(.top, 170)
                             }
                         }
                         

@@ -57,10 +57,10 @@ class GameState: ObservableObject {
         }
     }
     
-    // Список куплених скінів
-    @Published var purchasedSkins: Set<Int> {
+    // Вибраний скін (замість множини куплених)
+    @Published var purchasedSkinId: Int {
         didSet {
-            UserDefaults.standard.set(Array(purchasedSkins), forKey: "purchasedSkins")
+            UserDefaults.standard.set(purchasedSkinId, forKey: "purchasedSkinId")
             UserDefaults.standard.synchronize()
         }
     }
@@ -88,9 +88,9 @@ class GameState: ObservableObject {
         let savedIndex = UserDefaults.standard.integer(forKey: "currentWorldIndex")
         self.currentWorldIndex = savedIndex == 0 ? 0 : savedIndex
         
-        // Ініціалізація куплених скінів
-        let savedPurchasedSkins = UserDefaults.standard.array(forKey: "purchasedSkins") as? [Int] ?? []
-        self.purchasedSkins = Set(savedPurchasedSkins)
+        // Ініціалізація купленого скіна
+        let savedPurchasedSkin = UserDefaults.standard.integer(forKey: "purchasedSkinId")
+        self.purchasedSkinId = savedPurchasedSkin == 0 ? 1 : savedPurchasedSkin
         
         // Ініціалізація вибраного скіна
         let savedSelectedSkin = UserDefaults.standard.integer(forKey: "selectedSkinId")
@@ -118,12 +118,12 @@ class GameState: ObservableObject {
         
         // Оновлюємо вибраний скін після завантаження
         if selectedSkinId == 1 {
-            self.selectedSkinId = SkinModel.sampleSkins.first { isSkinPurchased($0.id) }?.id ?? 1
+            self.selectedSkinId = purchasedSkinId
         }
         
         // Оновлюємо індекс скіна після завантаження
         if currentSkinIndex == 0 {
-            self.currentSkinIndex = SkinModel.sampleSkins.firstIndex { isSkinPurchased($0.id) } ?? 0
+            self.currentSkinIndex = SkinModel.sampleSkins.firstIndex { $0.id == purchasedSkinId } ?? 0
         }
        
         setupAudio()
@@ -155,11 +155,11 @@ class GameState: ObservableObject {
     
     // Завантаження збережених скінів
     private func loadSavedSkins() {
-        print("Завантаження збережених скінів: \(purchasedSkins)")
+        print("Завантаження збереженого скіна: \(purchasedSkinId)")
         
         // Перший скін завжди розблокований
-        if !purchasedSkins.contains(1) {
-            purchasedSkins.insert(1)
+        if purchasedSkinId == 0 {
+            purchasedSkinId = 1
         }
     }
     
@@ -312,7 +312,7 @@ class GameState: ObservableObject {
     
     // Перевірка чи скін куплений
     func isSkinPurchased(_ skinId: Int) -> Bool {
-        return purchasedSkins.contains(skinId)
+        return skinId == purchasedSkinId
     }
     
     // Перевірка чи скін вибраний
@@ -364,9 +364,9 @@ class GameState: ObservableObject {
         
         print("Розблоковуємо скін: \(skinId)")
         
-        // Додаємо скін до куплених
-        purchasedSkins.insert(skinId)
-        print("Додано до куплених скінів: \(purchasedSkins)")
+        // Замінюємо старий скін на новий
+        purchasedSkinId = skinId
+        print("Встановлено куплений скін: \(purchasedSkinId)")
         
         // Робимо цей скін вибраним
         selectedSkinId = skinId
