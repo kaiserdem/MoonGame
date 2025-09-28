@@ -14,6 +14,8 @@ struct GamePlayView: View {
                 .resizable()
                 .aspectRatio(contentMode: .fill)
                 .ignoresSafeArea()
+                .blur(radius: 7)
+
             
             
             VStack(spacing: 0) {
@@ -66,6 +68,7 @@ struct GamePlayView: View {
                             .resizable()
                             .aspectRatio(contentMode: .fit)
                             .frame(width: 60, height: 90)
+                            .offset(x: -6)
                         
                         
                         Spacer()
@@ -76,6 +79,7 @@ struct GamePlayView: View {
                             .resizable()
                             .aspectRatio(contentMode: .fit)
                             .frame(width: 60, height: 90)
+                            .offset(x: 6)
                         
                         
                     }
@@ -89,6 +93,7 @@ struct GamePlayView: View {
                             .resizable()
                             .aspectRatio(contentMode: .fit)
                             .frame(width: 60, height: 90)
+                            .offset(x: -6)
                         
                         
                         Spacer()
@@ -99,6 +104,7 @@ struct GamePlayView: View {
                             .resizable()
                             .aspectRatio(contentMode: .fit)
                             .frame(width: 60, height: 90)
+                            .offset(x: 6)
                         
                         
                     }
