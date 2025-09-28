@@ -14,7 +14,7 @@ struct GamePlayView: View {
                 .resizable()
                 .aspectRatio(contentMode: .fill)
                 .ignoresSafeArea()
-                .blur(radius: 7)
+                .blur(radius: 2)
 
             
             
@@ -119,19 +119,27 @@ struct GamePlayView: View {
                 ZStack {
                     HStack {
                         
-                        Image("Property 1=normal") // rigth arrow
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: 70, height: 70)
+                        Button(action: {
+                            gameState.moveCannonLeft()
+                        }) {
+                            Image("Property 1=normal") // left arrow
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(width: 70, height: 70)
+                        }
                         
                         
                         Spacer()
                         Spacer()
                         
-                        Image("Right__bottom_button=normal-2") // left arrow
-                            .resizable()
-                            .aspectRatio(contentMode: .fit)
-                            .frame(width: 70, height: 70)
+                        Button(action: {
+                            gameState.moveCannonRight()
+                        }) {
+                            Image("Right__bottom_button=normal-2") // right arrow
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(width: 70, height: 70)
+                        }
                     }
                     
                     
@@ -140,6 +148,7 @@ struct GamePlayView: View {
                         .aspectRatio(contentMode: .fit)
                         .frame(width: 70, height: 70)
                         .padding(.bottom, 10)
+                        .offset(x: gameState.cannonPosition)
                         .onTapGesture {
                             
                         }

@@ -40,6 +40,10 @@ class GameState: ObservableObject {
     // Стан паузи
     @Published var isGamePaused: Bool = false
     
+    // Позиція гармати
+    @Published var cannonPosition: CGFloat = 0
+    private let maxCannonOffset: CGFloat = 120
+    
     // Список куплених світів
     @Published var purchasedWorlds: Set<Int> {
         didSet {
@@ -230,6 +234,24 @@ class GameState: ObservableObject {
     
     func resumeGame() {
         isGamePaused = false
+    }
+    
+    // MARK: - Cannon Control
+    
+    func moveCannonLeft() {
+        if cannonPosition > -maxCannonOffset {
+            cannonPosition -= 20
+        }
+    }
+    
+    func moveCannonRight() {
+        if cannonPosition < maxCannonOffset {
+            cannonPosition += 20
+        }
+    }
+    
+    func resetCannonPosition() {
+        cannonPosition = 0
     }
     
     // Форматований час для відображення
