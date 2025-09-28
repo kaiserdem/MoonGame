@@ -198,7 +198,7 @@ struct StoreView: View {
                                 Image("play bottom button=normal")
                                     .resizable()
                                     .aspectRatio(contentMode: .fit)
-                                    .frame(height: 80)
+                                    .frame(height: 70)
                             }
                             .buttonStyle(PlainButtonStyle())
                             
@@ -207,7 +207,7 @@ struct StoreView: View {
                                 Image("top button=normal")
                                     .resizable()
                                     .aspectRatio(contentMode: .fit)
-                                    .frame(height: 80)
+                                    .frame(height: 70)
                             }
                             .buttonStyle(PlainButtonStyle())
                             

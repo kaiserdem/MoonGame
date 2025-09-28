@@ -10,7 +10,7 @@ struct GamePlayView: View {
     
     var body: some View {
         ZStack {
-            Image("26 img")
+            Image(gameState.selectedWorld.backgroundImageName)
                 .resizable()
                 .aspectRatio(contentMode: .fill)
                 .ignoresSafeArea()
@@ -29,7 +29,7 @@ struct GamePlayView: View {
                     HStack(spacing: 20) {
                         
                         
-                        Text("00:00")
+                        Text(gameState.formattedGameTime)
                             .font(AppFonts.title)
                             .foregroundColor(.white)
                             .offset(x: 20)
@@ -151,7 +151,8 @@ struct GamePlayView: View {
                     
                     HStack {
                         Button(action: {
-                            gameState.pause()
+                            gameState.pauseGame()
+                            showPopup = true
                         }) {
                             Image("play bottom button=normal")
                                 .resizable()
@@ -186,10 +187,16 @@ struct GamePlayView: View {
                 }
             }
             
-            PopupView(isPresented: $showPopup, state: .win) {
+            PopupView(isPresented: $showPopup, state: .pause, gameState: gameState) {
                
             }
         }
         .navigationBarHidden(true)
+        .onAppear {
+            gameState.startGameTimer()
+        }
+        .onDisappear {
+            gameState.stopGameTimer()
+        }
     }
 }

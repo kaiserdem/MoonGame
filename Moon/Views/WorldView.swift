@@ -165,21 +165,23 @@ struct WorldView: View {
                             .aspectRatio(contentMode: .fit)
                             .frame(maxWidth: .infinity, maxHeight: 150)
                             .offset(y: 20)
-                        //.clipped()
                         
                         HStack {
                             
+                            NavigationLink(destination: GamePlayView(gameState: gameState)) {
                                 Image("play bottom button=normal")
                                     .resizable()
                                     .aspectRatio(contentMode: .fit)
                                     .frame(width: 70, height: 70)
+                            }
+                            .buttonStyle(PlainButtonStyle())
                             
                             
                             NavigationLink(destination: InfoView()) {
                                 Image("top button=normal")
                                     .resizable()
                                     .aspectRatio(contentMode: .fit)
-                                    .frame(height: 80)
+                                    .frame(height: 70)
                             }
                             .buttonStyle(PlainButtonStyle())
                             

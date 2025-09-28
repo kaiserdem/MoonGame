@@ -78,7 +78,7 @@ struct MenuView: View {
                             Image("top button=normal")
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
-                                .frame(height: 80)
+                                .frame(height: 70)
                         }
                         .buttonStyle(PlainButtonStyle())
                         
@@ -87,7 +87,7 @@ struct MenuView: View {
                             Image("question_top_button=normal")
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
-                                .frame(height: 80)
+                                .frame(height: 70)
                         }
                         .buttonStyle(PlainButtonStyle())
                         

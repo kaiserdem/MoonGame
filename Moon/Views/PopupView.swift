@@ -16,11 +16,13 @@ struct PopupView<Content: View>: View {
     
     var state: PopupState
     @Binding var isPresented: Bool
+    var gameState: GameState?
     
-    init(isPresented: Binding<Bool>, state: PopupState,  @ViewBuilder content: () -> Content) {
+    init(isPresented: Binding<Bool>, state: PopupState, gameState: GameState? = nil, @ViewBuilder content: () -> Content) {
         self._isPresented = isPresented
         self.content = content()
         self.state = state
+        self.gameState = gameState
     }
     
     var body: some View {
@@ -97,6 +99,7 @@ struct PopupView<Content: View>: View {
                         
                         Button(action: {
                             isPresented = false
+                            gameState?.resumeGame()
                         }) {
                             Image("Component 33")
                                 .resizable()
@@ -105,7 +108,10 @@ struct PopupView<Content: View>: View {
                         }
                         
                         Button(action: {
-                            // Repeat
+                            // Repeat - перезапуск гри
+                            gameState?.resetGameTimer()
+                            gameState?.startGameTimer()
+                            isPresented = false
                         }) {
                             Image("Repeat_bottom_button=normal")
                                 .resizable()
@@ -114,7 +120,9 @@ struct PopupView<Content: View>: View {
                         }
                         
                         Button(action: {
-                            // left
+                            // Exit - вихід з гри
+                            gameState?.stopGameTimer()
+                            isPresented = false
                         }) {
                             Image("Right__bottom_button=normal")
                                 .resizable()

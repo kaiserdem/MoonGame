@@ -33,6 +33,13 @@ class GameState: ObservableObject {
     // Тригер для оновлення UI
     @Published var worldsUpdated: Bool = false
     
+    // Таймер гри
+    @Published var gameTime: Int = 0
+    private var gameTimer: Timer?
+    
+    // Стан паузи
+    @Published var isGamePaused: Bool = false
+    
     // Список куплених світів
     @Published var purchasedWorlds: Set<Int> {
         didSet {
@@ -194,11 +201,54 @@ class GameState: ObservableObject {
         audioPlayer?.pause()
     }
     
+    // MARK: - Game Timer
+    
+    func startGameTimer() {
+        gameTime = 0
+        isGamePaused = false
+        gameTimer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { _ in
+            if !self.isGamePaused {
+                self.gameTime += 1
+            }
+        }
+    }
+    
+    func stopGameTimer() {
+        gameTimer?.invalidate()
+        gameTimer = nil
+        isGamePaused = false
+    }
+    
+    func resetGameTimer() {
+        gameTime = 0
+        isGamePaused = false
+    }
+    
+    func pauseGame() {
+        isGamePaused = true
+    }
+    
+    func resumeGame() {
+        isGamePaused = false
+    }
+    
+    // Форматований час для відображення
+    var formattedGameTime: String {
+        let minutes = gameTime / 60
+        let seconds = gameTime % 60
+        return String(format: "%02d:%02d", minutes, seconds)
+    }
+    
     // MARK: - World Management
     
     // Поточний світ
     var currentWorld: WorldModel {
         WorldModel.sampleWorlds[currentWorldIndex]
+    }
+    
+    // Вибраний світ
+    var selectedWorld: WorldModel {
+        WorldModel.sampleWorlds.first { $0.id == selectedWorldId } ?? WorldModel.sampleWorlds[0]
     }
     
     // Поточний скін
