@@ -2,7 +2,7 @@
 
 import SwiftUI
 
-struct PlayView: View {
+struct WorldView: View {
     
     @ObservedObject var gameState: GameState
     @Environment(\.dismiss) private var dismiss
