@@ -43,9 +43,9 @@ struct StoreView: View {
                                     .aspectRatio(contentMode: .fit)
                                     .frame(maxWidth: .infinity, maxHeight: 250)
                                     .offset(y: 20)
-                                    .blur(radius: gameState.isSkinPurchased(gameState.currentSkin.id) ? 0 : 0.5)
-                                    .brightness(gameState.isSkinPurchased(gameState.currentSkin.id) ? 0 : -0.05)
-                                    .saturation(gameState.isSkinPurchased(gameState.currentSkin.id) ? 1 : 0.7)
+                                    .blur(radius: gameState.isSkinPurchased(gameState.currentSkin.id) ? 0 : 1)
+                                    .brightness(gameState.isSkinPurchased(gameState.currentSkin.id) ? 0 : -0.1)
+                                    .saturation(gameState.isSkinPurchased(gameState.currentSkin.id) ? 1 : 0.6)
                                 
                                 
                                 ZStack {
