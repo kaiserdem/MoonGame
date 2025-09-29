@@ -42,7 +42,7 @@ class GameState: ObservableObject {
     
     // Позиція гармати
     @Published var cannonPosition: CGFloat = 0
-    private let maxCannonOffset: CGFloat = 120
+    private let maxCannonOffset: CGFloat = 80
     
     // Кулька
     @Published var ballPosition: CGPoint = CGPoint(x: 0, y: 0)

@@ -106,42 +106,44 @@ struct TestGamePlayView: View {
                 
                 Spacer()
                 
-                // Кнопки навігації та пушка
-                ZStack {
-                    HStack {
-                        Button(action: {
-                            gameState.moveCannonLeft()
-                        }) {
-                            Image("Property 1=normal") // left arrow
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                                .frame(width: 70, height: 70)
-                        }
-                        
-                        Spacer()
-                        
-                        Button(action: {
-                            gameState.moveCannonRight()
-                        }) {
-                            Image("Right__bottom_button=normal-2") // right arrow
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                                .frame(width: 70, height: 70)
-                        }
+                // Елементи управління та пушка на одній висоті
+                HStack {
+                    Button(action: {
+                        gameState.moveCannonLeft()
+                    }) {
+                        Image("Property 1=normal") // left arrow
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 70, height: 70)
                     }
                     
+                    Spacer()
+                    
+                    // Пушка по центру
                     Image("barrell 2") // PUSHKA
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                         .frame(width: 70, height: 70)
-                        .padding(.bottom, 10)
                         .offset(x: gameState.cannonPosition)
                         .onTapGesture {
                             if !isFlying {
                                 fire()
                             }
                         }
+                    
+                    Spacer()
+                    
+                    Button(action: {
+                        gameState.moveCannonRight()
+                    }) {
+                        Image("Right__bottom_button=normal-2") // right arrow
+                            .resizable()
+                            .aspectRatio(contentMode: .fit)
+                            .frame(width: 70, height: 70)
+                    }
                 }
+                //.padding(.horizontal, 20)
+                //.padding(.bottom, 20)
                 
                 // Нижнє меню
                 ZStack {
@@ -207,16 +209,6 @@ struct TestGamePlayView: View {
             }
             .position(x: UIScreen.main.bounds.width / 2, y: UIScreen.main.bounds.height / 2)
             
-            // Лічильник балів
-            VStack {
-                Text("Балів: \(score)")
-                    .font(.title)
-                    .foregroundColor(.white)
-                    .padding()
-                Spacer()
-            }
-            
-            // Popup для паузи
             if showPopup {
                 PopupView(isPresented: $showPopup, state: .pause, gameState: gameState) {
                     EmptyView()
@@ -234,9 +226,7 @@ struct TestGamePlayView: View {
     }
     
     func fire() {
-        // Початкова позиція кульки (з позиції гармати)
-        ballPosition = CGPoint(x: UIScreen.main.bounds.width / 2 + gameState.cannonPosition, 
-                               y: UIScreen.main.bounds.height - 150)
+        ballPosition = CGPoint(x: 200, y: 600)
         
         // Рандомний кут 80–100°
         let angleDegrees = Double.random(in: 85...95)

@@ -15,7 +15,7 @@ extension Font {
 
 struct AppFonts {
     // Назва шрифту з файлу
-    static let customFontName = "Kid-Games" // "Kadwa-Bold"
+    static let customFontName = "Kadwa-Bold"
     
     // Функція для перевірки доступних шрифтів
     static func printAvailableFonts() {
