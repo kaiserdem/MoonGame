@@ -10,8 +10,8 @@ struct GamePlayView: View {
     @State private var vy: CGFloat = 0
     @State private var isFlying = false
     
-    let gravity: CGFloat = 0.5
-    let initialSpeed: CGFloat = 30
+    let gravity: CGFloat = 0.4
+    let initialSpeed: CGFloat = 30  // Збільшуємо швидкість
     
     var body: some View {
         ZStack {
@@ -221,8 +221,9 @@ struct GamePlayView: View {
     }
     
     func fire() {
-        ballPosition = CGPoint(x: gameState.ballPosition.x + UIScreen.main.bounds.width / 2,
-                               y: UIScreen.main.bounds.height - 100 - gameState.ballPosition.y)
+        // Початкова позиція кульки (з позиції гармати)
+        ballPosition = CGPoint(x: UIScreen.main.bounds.width / 2 + gameState.cannonPosition, 
+                               y: UIScreen.main.bounds.height - 150)
         
         let angleDegrees = Double.random(in: 80...100)
         let angleRadians = angleDegrees * .pi / 180
@@ -237,18 +238,18 @@ struct GamePlayView: View {
             ballPosition.x += vx
             ballPosition.y += vy
             
-            // Перевіряємо, чи кулька вилетіла за межі екрана
-            if ballPosition.y >= UIScreen.main.bounds.height - 100 ||
-                ballPosition.x < 0 ||
-                ballPosition.x > UIScreen.main.bounds.width {
+            // Перевіряємо, чи кулька потрапила за межі екрана
+            if ballPosition.y >= UIScreen.main.bounds.height ||
+                ballPosition.x < -200 ||
+                ballPosition.x > UIScreen.main.bounds.width + 200 {
                 
                 isFlying = false
                 timer.invalidate()
                 
-                // Повертаємо кульку на стартову позицію через 1 секунду
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-                    ballPosition = CGPoint(x: gameState.ballPosition.x + UIScreen.main.bounds.width / 2,
-                                           y: UIScreen.main.bounds.height - 100 - gameState.ballPosition.y)
+                // Чекаємо 2 секунди і повертаємо кульку на стартову позицію
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+                    ballPosition = CGPoint(x: UIScreen.main.bounds.width / 2 + gameState.cannonPosition, 
+                                           y: UIScreen.main.bounds.height - 150)
                 }
             }
         }
