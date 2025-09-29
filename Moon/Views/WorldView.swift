@@ -79,7 +79,7 @@ struct WorldView: View {
                                             } else {
                                                 
                                                 
-                                                NavigationLink(destination: GamePlayView(gameState: gameState)) {
+                                                NavigationLink(destination: TestGamePlayView(gameState: gameState)) {
                                                     Image("play bottom button=normal")
                                                         .resizable()
                                                         .aspectRatio(contentMode: .fit)
@@ -168,14 +168,13 @@ struct WorldView: View {
                         
                         HStack {
                             
-                            NavigationLink(destination: GamePlayView(gameState: gameState)) {
+                            NavigationLink(destination: TestGamePlayView(gameState: gameState)) {
                                 Image("play bottom button=normal")
                                     .resizable()
                                     .aspectRatio(contentMode: .fit)
                                     .frame(width: 70, height: 70)
                             }
                             .buttonStyle(PlainButtonStyle())
-                            
                             
                             NavigationLink(destination: InfoView()) {
                                 Image("top button=normal")
@@ -185,8 +184,6 @@ struct WorldView: View {
                             }
                             .buttonStyle(PlainButtonStyle())
                             
-                            
-                            
                             Button(action: {
                                 dismiss()
                             }) {
@@ -195,20 +192,12 @@ struct WorldView: View {
                                     .aspectRatio(contentMode: .fit)
                                     .frame(width: 70, height: 70)
                             }
-                            
-                            
-                           
-                            
                         }
                         .padding(.top, 50)
-                        
                     }
-                    
-                    
                 }
             }
             .navigationBarHidden(true)
-            
         }
         .navigationBarHidden(true)
     }
