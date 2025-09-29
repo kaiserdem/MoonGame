@@ -106,23 +106,42 @@ struct TestGamePlayView: View {
                 
                 Spacer()
                 
-                // "Пушка"
-                Rectangle()
-                    .fill(Color.red)
-                    .frame(width: 60, height: 20)
-                    .position(x: 200, y: 620)
-        
-                Image("barrell 2") // PUSHKA
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: 70, height: 70)
-                    .padding(.bottom, 10)
-                    .offset(x: gameState.cannonPosition)
-                    .onTapGesture {
-                        if !isFlying {
-                            fire()
+                // Кнопки навігації та пушка
+                ZStack {
+                    HStack {
+                        Button(action: {
+                            gameState.moveCannonLeft()
+                        }) {
+                            Image("Property 1=normal") // left arrow
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(width: 70, height: 70)
+                        }
+                        
+                        Spacer()
+                        
+                        Button(action: {
+                            gameState.moveCannonRight()
+                        }) {
+                            Image("Right__bottom_button=normal-2") // right arrow
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(width: 70, height: 70)
                         }
                     }
+                    
+                    Image("barrell 2") // PUSHKA
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 70, height: 70)
+                        .padding(.bottom, 10)
+                        .offset(x: gameState.cannonPosition)
+                        .onTapGesture {
+                            if !isFlying {
+                                fire()
+                            }
+                        }
+                }
                 
                 // Нижнє меню
                 ZStack {
@@ -215,7 +234,9 @@ struct TestGamePlayView: View {
     }
     
     func fire() {
-        ballPosition = CGPoint(x: 200, y: 600)
+        // Початкова позиція кульки (з позиції гармати)
+        ballPosition = CGPoint(x: UIScreen.main.bounds.width / 2 + gameState.cannonPosition, 
+                               y: UIScreen.main.bounds.height - 150)
         
         // Рандомний кут 80–100°
         let angleDegrees = Double.random(in: 85...95)
