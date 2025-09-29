@@ -255,11 +255,14 @@ struct TestGamePlayView: View {
                 vy = -vy * damping
             }
             
-            // Земля
-            if ballPosition.y >= 600 {
-                ballPosition.y = 600
+            // Кулька падає за межі екрану
+            if ballPosition.y >= UIScreen.main.bounds.height + 100 {
                 isFlying = false
                 timer.invalidate()
+                // Повертаємо кульку на стартову позицію через 2 секунди
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+                    ballPosition = CGPoint(x: 200, y: 600)
+                }
             }
         }
     }
