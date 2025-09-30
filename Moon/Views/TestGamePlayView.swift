@@ -26,31 +26,29 @@ struct TestGamePlayView: View {
     @ObservedObject var gameState: GameState
     @State var showPopup = false
     
-    @State private var ballPosition: CGPoint = CGPoint(x: 200, y: 610) // старт 657
+    @State private var ballPosition: CGPoint = CGPoint(x: 0, y: 0)
     @State private var vx: CGFloat = 0
     @State private var vy: CGFloat = 0
     @State private var isFlying = false
     @State private var cannonFrame: CGRect = .zero
     @State private var cannonRealPosition: CGPoint = CGPoint(x: 0, y: 0)
     
-    // Координати бордерів
-    @State private var barrier1Frame: CGRect = .zero // Перший ряд - лівий
-    @State private var barrier2Frame: CGRect = .zero // Перший ряд - правий
-    @State private var barrier3Frame: CGRect = .zero // Другий ряд - лівий
-    @State private var barrier4Frame: CGRect = .zero // Другий ряд - правий
+    @State private var barrier1Frame: CGRect = .zero
+    @State private var barrier2Frame: CGRect = .zero
+    @State private var barrier3Frame: CGRect = .zero
+    @State private var barrier4Frame: CGRect = .zero
     @State private var plinkoBalls: [[Bool]] = [
-        Array(repeating: true, count: 6),  // 1-й ряд: 6 кульок
-        Array(repeating: true, count: 7),  // 2-й ряд: 7 кульок
-        Array(repeating: true, count: 6),  // 3-й ряд: 6 кульок
-        Array(repeating: true, count: 7),  // 4-й ряд: 7 кульок
-        Array(repeating: true, count: 6)   // 5-й ряд: 6 кульок
+        Array(repeating: true, count: 6),
+        Array(repeating: true, count: 7),
+        Array(repeating: true, count: 6),
+        Array(repeating: true, count: 7),
+        Array(repeating: true, count: 6)
     ]
     @State private var score: Int = 0
     
-    // Константи
-    let gravity: CGFloat = 0.4       // сила тяжіння (оптимізовано)
-    let initialSpeed: CGFloat = 20   // початкова швидкість (оптимізовано)
-    let ballRadius: CGFloat = 15     // радіус кульки
+    let gravity: CGFloat = 0.4
+    let initialSpeed: CGFloat = 25
+    let ballRadius: CGFloat = 10     // радіус кульки
     let topY: CGFloat = 100          // висота верхньої в'юшки
     let damping: CGFloat = 0.7       // коефіцієнт втрати енергії при відскоку (оптимізовано)
     
@@ -104,8 +102,7 @@ struct TestGamePlayView: View {
                         .offset(x: -6)
                         .captureFrame(in: .global) { frame in
                             barrier1Frame = frame
-                            print("Бордер 1 (лівий верх): x=\(Int(frame.midX)), y=\(Int(frame.midY))")
-                        }
+ґ                        }
                     Spacer()
                     Spacer()
                     
@@ -116,8 +113,7 @@ struct TestGamePlayView: View {
                         .offset(x: 6)
                         .captureFrame(in: .global) { frame in
                             barrier2Frame = frame
-                            print("Бордер 2 (правий верх): x=\(Int(frame.midX)), y=\(Int(frame.midY))")
-                        }
+ґ                        }
                 }
                 
                 Spacer()
@@ -131,7 +127,6 @@ struct TestGamePlayView: View {
                         .offset(x: -6)
                         .captureFrame(in: .global) { frame in
                             barrier3Frame = frame
-                            print("Бордер 3 (лівий низ): x=\(Int(frame.midX)), y=\(Int(frame.midY))")
                         }
                     
                     Spacer()
@@ -144,7 +139,6 @@ struct TestGamePlayView: View {
                         .offset(x: 6)
                         .captureFrame(in: .global) { frame in
                             barrier4Frame = frame
-                            print("Бордер 4 (правий низ): x=\(Int(frame.midX)), y=\(Int(frame.midY))")
                         }
                 }
                 
@@ -153,7 +147,6 @@ struct TestGamePlayView: View {
                 // Елементи управління та пушка на одній висоті
                 HStack {
                     Button(action: {
-                        print("Натиснуто кнопку вліво")
                         gameState.moveCannonLeft()
                     }) {
                         Image("Property 1=normal") // left arrow
@@ -162,7 +155,6 @@ struct TestGamePlayView: View {
                             .frame(width: 70, height: 70)
                             .captureFrame(in: .global) { frame in
                                 cannonFrame = frame
-                                print("left arrow: x=\(Int(frame.midX)), y=\(Int(frame.midY))")
                             }
                     }
                     
@@ -179,7 +171,6 @@ struct TestGamePlayView: View {
                             cannonFrame = frame
                             cannonRealPosition = CGPoint(x: frame.midX, y: frame.midY)
                             print("Пушка позиція: x=\(Int(frame.midX)), y=\(Int(frame.midY))")
-                            print("Пушка offset: \(gameState.cannonPosition)")
                         }
                         .onTapGesture {
                             if !isFlying {
@@ -190,7 +181,6 @@ struct TestGamePlayView: View {
                     Spacer()
                     
                     Button(action: {
-                        print("Натиснуто кнопку вправо")
                         gameState.moveCannonRight()
                     }) {
                         Image("Right__bottom_button=normal-2") // right arrow
@@ -199,7 +189,6 @@ struct TestGamePlayView: View {
                             .frame(width: 70, height: 70)
                             .captureFrame(in: .global) { frame in
                                 cannonFrame = frame
-                                print("right arrow: x=\(Int(frame.midX)), y=\(Int(frame.midY))")
                             }
                     }
                 }
@@ -280,10 +269,6 @@ struct TestGamePlayView: View {
         .navigationBarHidden(true)
         .onAppear {
             gameState.startGameTimer()
-            // Ініціалізуємо позицію кульки на позиції пушки
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                ballPosition = cannonRealPosition
-            }
         }
         .onDisappear {
             gameState.stopGameTimer()
@@ -301,10 +286,6 @@ struct TestGamePlayView: View {
             )
             // Оновлюємо реальну позицію пушки
             cannonRealPosition = CGPoint(x: cannonFrame.midX, y: cannonFrame.midY)
-            // Оновлюємо позицію кульки, якщо вона не летить
-            if !isFlying {
-                ballPosition = cannonRealPosition
-            }
             print("Оновлена позиція пушки: x=\(cannonFrame.midX), y=\(cannonFrame.midY)")
         }
     }
@@ -346,10 +327,12 @@ struct TestGamePlayView: View {
             if ballPosition.y >= UIScreen.main.bounds.height + 100 {
                 isFlying = false
                 timer.invalidate()
-                print("улька падає за межі екрану")
+                print("Kулька падає за межі екрану")
+                print("\n")
+
                 // Повертаємо кульку на стартову позицію через 2 секунди
                 DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-                    ballPosition = cannonRealPosition
+                    ballPosition = CGPoint(x: 200, y: 600)
                 }
             }
         }

@@ -149,12 +149,9 @@ class GameState: ObservableObject {
     
     // Завантаження збережених світів
     private func loadSavedWorlds() {
-        print("Завантаження збережених світів: \(purchasedWorlds)")
         
         for (index, world) in WorldModel.sampleWorlds.enumerated() {
             if purchasedWorlds.contains(world.id) {
-                print("Розблоковуємо світ: \(world.name) (ID: \(world.id))")
-                // Оновлюємо світ як розблокований
                 WorldModel.sampleWorlds[index] = WorldModel(
                     id: world.id,
                     name: world.name,
@@ -169,7 +166,6 @@ class GameState: ObservableObject {
     
     // Завантаження збережених скінів
     private func loadSavedSkins() {
-        print("Завантаження збереженого скіна: \(purchasedSkinId)")
         
         // Перший скін завжди розблокований
         if purchasedSkinId == 0 {

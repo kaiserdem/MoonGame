@@ -2,26 +2,19 @@ import SwiftUI
 
 extension Font {
     static func customFont(_ name: String, size: CGFloat) -> Font {
-        // Перевіряємо чи шрифт доступний
         if UIFont(name: name, size: size) != nil {
             return Font.custom(name, size: size)
         } else {
-            // Fallback на системний шрифт
-            print("Шрифт \(name) не знайдено, використовується системний")
             return Font.system(size: size)
         }
     }
 }
 
 struct AppFonts {
-    // Назва шрифту з файлу
     static let customFontName = "Kadwa-Bold"
     
-    // Функція для перевірки доступних шрифтів
     static func printAvailableFonts() {
-        print("Доступні шрифти:")
         for family in UIFont.familyNames {
-            print("Сім'я: \(family)")
             for name in UIFont.fontNames(forFamilyName: family) {
                 print("  - \(name)")
             }

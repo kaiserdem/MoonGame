@@ -1,9 +1,3 @@
-//
-//  MoonApp.swift
-//  Moon
-//
-//  Created by Yaroslav Golinskiy on 26/09/2025.
-//
 
 import SwiftUI
 
@@ -15,7 +9,6 @@ struct MoonApp: App {
     var body: some Scene {
         WindowGroup {
             MenuView(gameState: gameState)
-            //TestGamePlayView(gameState: gameState)
         }
     }
 }
