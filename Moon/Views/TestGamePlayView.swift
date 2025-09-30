@@ -49,7 +49,7 @@ struct TestGamePlayView: View {
     
     let gravity: CGFloat = 0.4
     let initialSpeed: CGFloat = 25
-    let ballRadius: CGFloat = 10     // радіус кульки
+    let ballRadius: CGFloat = 15     // радіус кульки
     let topY: CGFloat = 100          // висота верхньої в'юшки
     let damping: CGFloat = 0.7       // коефіцієнт втрати енергії при відскоку (оптимізовано)
     
@@ -391,7 +391,7 @@ struct TestGamePlayView: View {
         let screenHeight = UIScreen.main.bounds.height
         let plinkoSpacing: CGFloat = 20
         let plinkoSize: CGFloat = 25
-        let ballSize: CGFloat = 30
+        let ballSize: CGFloat = 15  // Зменшено з 30 до 15 (радіус кульки)
         let rowSpacing: CGFloat = 30
         
         // Початкова Y позиція першого ряду
@@ -408,12 +408,13 @@ struct TestGamePlayView: View {
                 if plinkoBalls[rowIndex][colIndex] { // Тільки якщо кулька видима
                     let plinkoX = startX + CGFloat(colIndex) * (plinkoSpacing + plinkoSize)
                     
-                    // Перевірка зіткнення
+                    // Перевірка зіткнення з більш точним радіусом
                     let distance = sqrt(pow(ballPosition.x - plinkoX, 2) + pow(ballPosition.y - plinkoY, 2))
-                    let collisionDistance = (ballSize + plinkoSize) / 2
+                    let collisionDistance = (ballSize + plinkoSize) / 2 - 5  // Віднімаємо 5 для більшої точності
                     
                     if distance < collisionDistance {
                         // Зіткнення!
+                        print("Зіткнення з Plinko кулькою: ряд \(rowIndex), колонка \(colIndex), відстань: \(distance)")
                         plinkoBalls[rowIndex][colIndex] = false // Робимо кульку прозорою
                         score += 1 // Додаємо бал
                         gameState.totalScore += 1 // Додаємо бал до загального рахунку

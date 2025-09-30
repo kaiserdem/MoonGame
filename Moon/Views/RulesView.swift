@@ -27,27 +27,16 @@ struct RulesView: View {
                             
                             Spacer()
                             
-                            Text("Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley  of type and scrambled ")
-                                //.font(.kadwaTitle2)
-                                .font(.title)
+                            Text("GAME RULES:\n\n• Tap the cannon to shoot\n• Use arrows to move the cannon\n• Hit Plinko balls to earn points\n• Avoid letting the ball fall off-screen\n• Collect coins to unlock worlds and skins")
+                                .font(AppFonts.title)
                                 .foregroundColor(AppColors.Text.primary)
                                 .multilineTextAlignment(.center)
                                 .padding(.horizontal, 40)
-                                //.padding(.vertical, 20)
                                 .shadow(color: Color.black.opacity(0.3), radius: 10, x: 0, y: 0)
                                 .minimumScaleFactor(0.5)
                                 .lineLimit(nil)
                                 .frame(maxHeight: 400)
-                            //                                .frame(maxHeight: 400)
-
-                            
-                            // place for text
-                            
-                            Image("Group 88")
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                                .frame(maxWidth: .infinity, maxHeight: 120)
-                                .offset(y: -70)
+                           
                             
                             Spacer()
                         }

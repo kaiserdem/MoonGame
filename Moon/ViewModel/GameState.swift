@@ -22,7 +22,6 @@ class GameState: ObservableObject {
         }
     }
     
-    // Загальна кількість балів
     @Published var totalScore: Int {
         didSet {
             UserDefaults.standard.set(totalScore, forKey: "totalScore")
@@ -30,7 +29,6 @@ class GameState: ObservableObject {
         }
     }
     
-    // Тригер для оновлення UI
     @Published var worldsUpdated: Bool = false
     
     // Таймер гри
@@ -42,7 +40,7 @@ class GameState: ObservableObject {
     
     // Позиція гармати
     @Published var cannonPosition: CGFloat = 0
-    private let maxCannonOffset: CGFloat = 90
+    private let maxCannonOffset: CGFloat = 120
     
     // Кулька
     @Published var ballPosition: CGPoint = CGPoint(x: 0, y: 0)
