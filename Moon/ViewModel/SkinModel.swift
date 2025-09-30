@@ -1,12 +1,9 @@
-
 import SwiftUI
-
 struct SkinModel: Identifiable, Codable {
     let id: Int
     let unlockedImageName: String
     let lockedImageName: String
     let backgroundImageName: String
-    
     init(id: Int, unlockedImageName: String, storeImageName: String, backgroundImageName: String) {
         self.id = id
         self.unlockedImageName = unlockedImageName
@@ -14,8 +11,6 @@ struct SkinModel: Identifiable, Codable {
         self.backgroundImageName = backgroundImageName
     }
 }
-
-// Приклад використання:
 extension SkinModel {
     static var sampleSkins: [SkinModel] = [
         SkinModel(

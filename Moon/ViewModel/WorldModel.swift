@@ -1,5 +1,4 @@
 import SwiftUI
-
 struct WorldModel: Identifiable, Codable {
     let id: Int
     let name: String
@@ -7,7 +6,6 @@ struct WorldModel: Identifiable, Codable {
     let unlockedImageName: String
     let lockedImageName: String
     let backgroundImageName: String
-    
     init(id: Int, name: String, isUnlocked: Bool, unlockedImageName: String, lockedImageName: String, backgroundImageName: String) {
         self.id = id
         self.name = name
@@ -17,8 +15,6 @@ struct WorldModel: Identifiable, Codable {
         self.backgroundImageName = backgroundImageName
     }
 }
-
-// Приклад використання:
 extension WorldModel {
     static var sampleWorlds: [WorldModel] = [
         WorldModel(

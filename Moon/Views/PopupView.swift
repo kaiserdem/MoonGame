@@ -1,19 +1,14 @@
 import SwiftUI
-
-
 struct VisualEffectView: UIViewRepresentable {
     var effect: UIVisualEffect?
     func makeUIView(context: UIViewRepresentableContext<Self>) -> UIVisualEffectView { UIVisualEffectView() }
     func updateUIView(_ uiView: UIVisualEffectView, context: UIViewRepresentableContext<Self>) { uiView.effect = effect }
 }
-
 enum PopupState {
     case pause, win, lose
 }
-
 struct PopupView<Content: View>: View {
     let content: Content
-    
     var state: PopupState
     @Binding var isPresented: Bool
     var gameState: GameState?
@@ -21,7 +16,6 @@ struct PopupView<Content: View>: View {
     var onRestart: (() -> Void)?
     var onExit: (() -> Void)?
     var onMenu: (() -> Void)?
-    
     init(isPresented: Binding<Bool>, state: PopupState, gameState: GameState? = nil, onResume: (() -> Void)? = nil, onRestart: (() -> Void)? = nil, onExit: (() -> Void)? = nil, onMenu: (() -> Void)? = nil, @ViewBuilder content: () -> Content) {
         self._isPresented = isPresented
         self.content = content()
@@ -32,7 +26,6 @@ struct PopupView<Content: View>: View {
         self.onExit = onExit
         self.onMenu = onMenu
     }
-    
     var body: some View {
         ZStack {
             if isPresented {
@@ -40,20 +33,14 @@ struct PopupView<Content: View>: View {
                     .background(.ultraThinMaterial)
                     .ignoresSafeArea()
                     .blur(radius: 100)
-                
                 content
                     .transition(.scale.combined(with: .opacity))
-                
-                
                 ZStack {
                     Image("Pop-up_Frame")
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                         .frame(maxWidth: .infinity)
-                    
                     VStack(alignment: .center, spacing: -10) {
-                        
-                        
                         switch state {
                         case .pause:
                             ZStack {
@@ -61,8 +48,6 @@ struct PopupView<Content: View>: View {
                                     .resizable()
                                     .aspectRatio(contentMode: .fit)
                                     .frame(maxWidth: .infinity, maxHeight: 250)
-
-                                
                                 Image("PAUSE")
                                     .resizable()
                                     .aspectRatio(contentMode: .fit)
@@ -76,7 +61,6 @@ struct PopupView<Content: View>: View {
                                     .aspectRatio(contentMode: .fit)
                                     .frame(maxWidth: .infinity, maxHeight: 100)
                                     .offset(y:-10)
-                                
                                 Image("YOU WIN!")
                                     .resizable()
                                     .aspectRatio(contentMode: .fit)
@@ -89,8 +73,6 @@ struct PopupView<Content: View>: View {
                                     .resizable()
                                     .aspectRatio(contentMode: .fit)
                                     .frame(maxWidth: .infinity, maxHeight: 100)
-
-                                
                                 Image("YOU LOSE!")
                                     .resizable()
                                     .aspectRatio(contentMode: .fit)
@@ -98,13 +80,9 @@ struct PopupView<Content: View>: View {
                                     .offset(y:70)
                             }
                         }
-                     
                     }
-                    
                     HStack(spacing: -10) {
-                        
                         Spacer()
-                        
                         Button(action: {
                             onResume?()
                         }) {
@@ -113,7 +91,6 @@ struct PopupView<Content: View>: View {
                                 .aspectRatio(contentMode: .fit)
                                 .frame(maxWidth: .infinity, maxHeight: 70)
                         }
-                        
                         Button(action: {
                             onRestart?()
                         }) {
@@ -122,29 +99,21 @@ struct PopupView<Content: View>: View {
                                 .aspectRatio(contentMode: .fit)
                                 .frame(maxWidth: .infinity, maxHeight: 70)
                         }
-                        
-//                        if state == .pause {
                             Button(action: {
                                 onRestart?()
                                 onMenu?()
                             }) {
                                 ZStack {
-                                    
                                     Image("Bottom_Button=normal")
                                         .resizable()
                                         .aspectRatio(contentMode: .fit)
                                         .frame(maxWidth: .infinity, maxHeight: 70)
-                                    
                                     Image("Property 1=icon_menu")
                                         .resizable()
                                         .aspectRatio(contentMode: .fit)
                                         .frame(width: 40, height: 40)
                                 }
                             }
-//                        } else {
-//                            Spacer()
-//                        }
-                        
                         Spacer()
                     }
                     .padding(.top, 280)
@@ -155,4 +124,3 @@ struct PopupView<Content: View>: View {
         .animation(.easeInOut(duration: 0.3), value: isPresented)
     }
 }
-
