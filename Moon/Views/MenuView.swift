@@ -107,7 +107,7 @@ struct MenuView: View {
                 }
             }
             
-            PopupView(isPresented: $showPopup, state: .win) {
+            PopupView(isPresented: $showPopup, state: .win, onMenu: nil) {
                
             }
         }

@@ -26,6 +26,7 @@ struct TestGamePlayView: View {
     @ObservedObject var gameState: GameState
     @State var showPopup = false
     @State private var popupState: PopupState = .pause
+    @Environment(\.presentationMode) var presentationMode
     
     @State private var ballPosition: CGPoint = CGPoint(x: 0, y: 0)
     @State private var vx: CGFloat = 0
@@ -52,7 +53,7 @@ struct TestGamePlayView: View {
     
     let gravity: CGFloat = 0.4
     let initialSpeed: CGFloat = 25
-    let ballRadius: CGFloat = 15     // радіус кульки
+    let ballRadius: CGFloat = 10     // радіус кульки
     let topY: CGFloat = 100          // висота верхньої в'юшки
     let damping: CGFloat = 0.7       // коефіцієнт втрати енергії при відскоку (оптимізовано)
     
@@ -208,7 +209,7 @@ struct TestGamePlayView: View {
                 
                 // Нижнє меню
                 ZStack {
-                    Image("Property 1=icon_pause")
+                    Image("Menu_Footer")
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                         .frame(maxWidth: .infinity, maxHeight: 150)
@@ -220,10 +221,10 @@ struct TestGamePlayView: View {
                             popupState = .pause
                             showPopup = true
                         }) {
-                            Image("play bottom button=normal")
+                            Image("Property 1=icon_pause")
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
-                                .frame(width: 70, height: 70)
+                                .frame(width: 40, height: 40)
                         }
                         
                         NavigationLink(destination: RulesView()) {
@@ -280,7 +281,15 @@ struct TestGamePlayView: View {
             .position(x: UIScreen.main.bounds.width / 2, y: UIScreen.main.bounds.height / 2)
             
             if showPopup {
-                PopupView(isPresented: $showPopup, state: popupState, gameState: gameState) {
+                PopupView(
+                    isPresented: $showPopup, 
+                    state: popupState, 
+                    gameState: gameState,
+                    onResume: resumeGame,
+                    onRestart: restartGame,
+                    onExit: exitToMenu,
+                    onMenu: navigateToMenu
+                ) {
                     EmptyView()
                 }
             }
@@ -496,6 +505,7 @@ struct TestGamePlayView: View {
         
         // Скидаємо всі Plinko кульки
         plinkoBalls = [
+            Array(repeating: true, count: 6),
             Array(repeating: true, count: 7),
             Array(repeating: true, count: 6),
             Array(repeating: true, count: 7),
@@ -506,10 +516,43 @@ struct TestGamePlayView: View {
         flightTimer?.invalidate()
         flightTimer = nil
         
+        // Зупиняємо ігровий таймер
+        gameState.stopGameTimer()
+        
         // Перезапускаємо ігровий таймер
         gameState.startGameTimer()
         
         print("=== ГРА СКИНУТА ===")
+    }
+    
+    func resumeGame() {
+        // Продовжуємо гру
+        showPopup = false
+        gameState.resumeGame()  // Відновлюємо таймер
+        print("=== ГРА ПРОДОВЖЕНА ===")
+    }
+    
+    func restartGame() {
+        // Починаємо гру з нуля
+        showPopup = false
+        resetGame()
+        print("=== ГРА ПЕРЕЗАПУЩЕНА ===")
+    }
+    
+    func exitToMenu() {
+        // Виходимо в меню
+        showPopup = false
+        gameState.pauseGame()  // Зупиняємо таймер
+        // Тут можна додати навігацію до MenuView
+        print("=== ВИХІД В МЕНЮ ===")
+    }
+    
+    func navigateToMenu() {
+        // Навігація до меню
+        showPopup = false
+        gameState.pauseGame()  // Зупиняємо таймер
+        presentationMode.wrappedValue.dismiss()  // Повертаємось до попереднього екрану (меню)
+        print("=== НАВІГАЦІЯ ДО МЕНЮ ===")
     }
     
     func checkBarrierCollision() {

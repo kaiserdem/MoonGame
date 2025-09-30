@@ -17,12 +17,20 @@ struct PopupView<Content: View>: View {
     var state: PopupState
     @Binding var isPresented: Bool
     var gameState: GameState?
+    var onResume: (() -> Void)?
+    var onRestart: (() -> Void)?
+    var onExit: (() -> Void)?
+    var onMenu: (() -> Void)?
     
-    init(isPresented: Binding<Bool>, state: PopupState, gameState: GameState? = nil, @ViewBuilder content: () -> Content) {
+    init(isPresented: Binding<Bool>, state: PopupState, gameState: GameState? = nil, onResume: (() -> Void)? = nil, onRestart: (() -> Void)? = nil, onExit: (() -> Void)? = nil, onMenu: (() -> Void)? = nil, @ViewBuilder content: () -> Content) {
         self._isPresented = isPresented
         self.content = content()
         self.state = state
         self.gameState = gameState
+        self.onResume = onResume
+        self.onRestart = onRestart
+        self.onExit = onExit
+        self.onMenu = onMenu
     }
     
     var body: some View {
@@ -98,8 +106,7 @@ struct PopupView<Content: View>: View {
                         Spacer()
                         
                         Button(action: {
-                            isPresented = false
-                            gameState?.resumeGame()
+                            onResume?()
                         }) {
                             Image("Component 33")
                                 .resizable()
@@ -108,10 +115,7 @@ struct PopupView<Content: View>: View {
                         }
                         
                         Button(action: {
-                            // Repeat - перезапуск гри
-                            gameState?.resetGameTimer()
-                            gameState?.startGameTimer()
-                            isPresented = false
+                            onRestart?()
                         }) {
                             Image("Repeat_bottom_button=normal")
                                 .resizable()
@@ -119,15 +123,25 @@ struct PopupView<Content: View>: View {
                                 .frame(maxWidth: .infinity, maxHeight: 70)
                         }
                         
-                        Button(action: {
-                            // Exit - вихід з гри
-                            gameState?.stopGameTimer()
-                            isPresented = false
-                        }) {
-                            Image("Right__bottom_button=normal")
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                                .frame(maxWidth: .infinity, maxHeight: 70)
+                        if state == .pause {
+                            Button(action: {
+                                onMenu?()
+                            }) {
+                                ZStack {
+                                    
+                                    Image("Bottom_Button=normal")
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fit)
+                                        .frame(maxWidth: .infinity, maxHeight: 70)
+                                    
+                                    Image("Property 1=icon_menu")
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fit)
+                                        .frame(width: 40, height: 40)
+                                }
+                            }
+                        } else {
+                            Spacer()
                         }
                         
                         Spacer()
