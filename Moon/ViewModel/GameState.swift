@@ -42,7 +42,7 @@ class GameState: ObservableObject {
     
     // Позиція гармати
     @Published var cannonPosition: CGFloat = 0
-    private let maxCannonOffset: CGFloat = 80
+    private let maxCannonOffset: CGFloat = 90
     
     // Кулька
     @Published var ballPosition: CGPoint = CGPoint(x: 0, y: 0)
@@ -247,12 +247,14 @@ class GameState: ObservableObject {
     func moveCannonLeft() {
         if cannonPosition > -maxCannonOffset {
             cannonPosition -= 20
+            print("Пушка рухається вліво: \(cannonPosition)")
         }
     }
     
     func moveCannonRight() {
         if cannonPosition < maxCannonOffset {
             cannonPosition += 20
+            print("Пушка рухається вправо: \(cannonPosition)")
         }
     }
     

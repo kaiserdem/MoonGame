@@ -1,15 +1,37 @@
 
 import SwiftUI
 
+// Ключ для передачі геометрії
+struct ViewPositionKey: PreferenceKey {
+    static var defaultValue: CGRect = .zero
+    static func reduce(value: inout CGRect, nextValue: () -> CGRect) {
+        value = nextValue()
+    }
+}
+
+extension View {
+    func captureFrame(in coordinateSpace: CoordinateSpace, _ onChange: @escaping (CGRect) -> Void) -> some View {
+        self.background(
+            GeometryReader { geo in
+                Color.clear
+                    .preference(key: ViewPositionKey.self, value: geo.frame(in: coordinateSpace))
+            }
+        )
+        .onPreferenceChange(ViewPositionKey.self, perform: onChange)
+    }
+}
+
 struct TestGamePlayView: View {
     
     @ObservedObject var gameState: GameState
     @State var showPopup = false
     
-    @State private var ballPosition: CGPoint = CGPoint(x: 200, y: 600) // старт
+    @State private var ballPosition: CGPoint = CGPoint(x: 200, y: 610) // старт 657
     @State private var vx: CGFloat = 0
     @State private var vy: CGFloat = 0
     @State private var isFlying = false
+    @State private var cannonFrame: CGRect = .zero
+    @State private var cannonRealPosition: CGPoint = CGPoint(x: 0, y: 0)
     @State private var plinkoBalls: [[Bool]] = [
         Array(repeating: true, count: 6),  // 1-й ряд: 6 кульок
         Array(repeating: true, count: 7),  // 2-й ряд: 7 кульок
@@ -109,15 +131,21 @@ struct TestGamePlayView: View {
                 // Елементи управління та пушка на одній висоті
                 HStack {
                     Button(action: {
+                        print("Натиснуто кнопку вліво")
                         gameState.moveCannonLeft()
                     }) {
                         Image("Property 1=normal") // left arrow
                             .resizable()
                             .aspectRatio(contentMode: .fit)
                             .frame(width: 70, height: 70)
+                            .captureFrame(in: .global) { frame in
+                                cannonFrame = frame
+                                print("left arrow: x=\(Int(frame.midX)), y=\(Int(frame.midY))")
+                            }
                     }
                     
                     Spacer()
+                    
                     
                     // Пушка по центру
                     Image("barrell 2") // PUSHKA
@@ -125,6 +153,12 @@ struct TestGamePlayView: View {
                         .aspectRatio(contentMode: .fit)
                         .frame(width: 70, height: 70)
                         .offset(x: gameState.cannonPosition)
+                        .captureFrame(in: .global) { frame in
+                            cannonFrame = frame
+                            cannonRealPosition = CGPoint(x: frame.midX, y: frame.midY)
+                            print("Пушка позиція: x=\(Int(frame.midX)), y=\(Int(frame.midY))")
+                            print("Пушка offset: \(gameState.cannonPosition)")
+                        }
                         .onTapGesture {
                             if !isFlying {
                                 fire()
@@ -134,12 +168,17 @@ struct TestGamePlayView: View {
                     Spacer()
                     
                     Button(action: {
+                        print("Натиснуто кнопку вправо")
                         gameState.moveCannonRight()
                     }) {
                         Image("Right__bottom_button=normal-2") // right arrow
                             .resizable()
                             .aspectRatio(contentMode: .fit)
                             .frame(width: 70, height: 70)
+                            .captureFrame(in: .global) { frame in
+                                cannonFrame = frame
+                                print("right arrow: x=\(Int(frame.midX)), y=\(Int(frame.midY))")
+                            }
                     }
                 }
                 //.padding(.horizontal, 20)
@@ -219,14 +258,39 @@ struct TestGamePlayView: View {
         .navigationBarHidden(true)
         .onAppear {
             gameState.startGameTimer()
+            // Ініціалізуємо позицію кульки на позиції пушки
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
+                ballPosition = cannonRealPosition
+            }
         }
         .onDisappear {
             gameState.stopGameTimer()
         }
+        .onChange(of: gameState.cannonPosition) { newPosition in
+            print("Cannon position змінився на: \(newPosition)")
+            // Оновлюємо cannonFrame вручну
+            let screenWidth = UIScreen.main.bounds.width
+            let screenHeight = UIScreen.main.bounds.height
+            cannonFrame = CGRect(
+                x: screenWidth / 2 + newPosition - 35, // 35 = половина ширини пушки
+                y: screenHeight - 150 - 35, // 35 = половина висоти пушки
+                width: 70,
+                height: 70
+            )
+            // Оновлюємо реальну позицію пушки
+            cannonRealPosition = CGPoint(x: cannonFrame.midX, y: cannonFrame.midY)
+            // Оновлюємо позицію кульки, якщо вона не летить
+            if !isFlying {
+                ballPosition = cannonRealPosition
+            }
+            print("Оновлена позиція пушки: x=\(cannonFrame.midX), y=\(cannonFrame.midY)")
+        }
     }
     
     func fire() {
-        ballPosition = CGPoint(x: 200, y: 600)
+        // Початкова позиція кульки (з реальної позиції пушки)
+        ballPosition = cannonRealPosition
+        print("Кулька стартує з: X=\(cannonRealPosition.x), Y=\(cannonRealPosition.y)")
         
         // Рандомний кут 80–100°
         let angleDegrees = Double.random(in: 85...95)
@@ -261,7 +325,7 @@ struct TestGamePlayView: View {
                 timer.invalidate()
                 // Повертаємо кульку на стартову позицію через 2 секунди
                 DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-                    ballPosition = CGPoint(x: 200, y: 600)
+                    ballPosition = cannonRealPosition
                 }
             }
         }
