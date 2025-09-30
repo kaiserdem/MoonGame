@@ -181,7 +181,6 @@ struct TestGamePlayView: View {
                     .captureFrame(in: .global) { frame in
                         cannonFrame = frame
                         cannonRealPosition = CGPoint(x: frame.midX, y: frame.midY)
-                        print("Пушка позиція: x=\(Int(frame.midX)), y=\(Int(frame.midY))")
                     }
                     .onTapGesture {
                         if !isFlying {
@@ -203,8 +202,6 @@ struct TestGamePlayView: View {
                             }
                     }
                 }
-                //.padding(.horizontal, 20)
-                //.padding(.bottom, 20)
                 
                 // Нижнє меню
                 ZStack {
@@ -225,22 +222,27 @@ struct TestGamePlayView: View {
                                 .frame(width: 70, height: 70)
                         }
                         
-                        Button(action: {
-                            gameState.toggleSound()
-                        }) {
+                        NavigationLink(destination: RulesView()) {
                             Image("question_top_button=normal")
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
-                                .frame(width: 70, height: 70)
+                                .frame(height: 70)
                         }
+                        .buttonStyle(PlainButtonStyle())
+                        
                         
                         Button(action: {
                             gameState.toggleSound()
                         }) {
-                            Image("top button=normal")
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                                .frame(width: 70, height: 70)
+                            ZStack {
+                                Image(gameState.selectedSkin.backgroundImageName)
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(width: 70, height: 70)
+                                
+                                Text("x6")  // кількість кульок
+                                    
+                            }
                         }
                     }
                     .padding(.top, 50)
@@ -304,24 +306,16 @@ struct TestGamePlayView: View {
             cannonRealPosition = CGPoint(x: cannonFrame.midX, y: cannonFrame.midY)
             // Синхронізуємо позицію кульки з пушкою, якщо вона не летить
             if !isFlying {
-                print("=== СИНХРОНІЗАЦІЯ З ПУШКОЮ ===")
-                print("isFlying: \(isFlying)")
-                print("cannonRealPosition: x=\(cannonRealPosition.x), y=\(cannonRealPosition.y)")
-                print("ballPosition до синхронізації: x=\(ballPosition.x), y=\(ballPosition.y)")
+               
                 ballPosition = cannonRealPosition
-                print("ballPosition після синхронізації: x=\(ballPosition.x), y=\(ballPosition.y)")
-                print("=== КІНЕЦЬ СИНХРОНІЗАЦІЇ ===")
+               
             }
             print("Оновлена позиція пушки: x=\(cannonFrame.midX), y=\(cannonFrame.midY)")
         }
     }
     
     func fire() {
-        print("=== ПОЧАТОК ПОСТРІЛУ ===")
-        print("isFlying до пострілу: \(isFlying)")
-        print("cannonRealPosition: x=\(cannonRealPosition.x), y=\(cannonRealPosition.y)")
-        print("ballPosition до пострілу: x=\(ballPosition.x), y=\(ballPosition.y)")
-        
+       
         // Скидаємо попередній таймер та швидкості
         flightTimer?.invalidate()
         vx = 0
@@ -364,11 +358,7 @@ struct TestGamePlayView: View {
             
             // Кулька падає за межі екрану
             if ballPosition.y >= UIScreen.main.bounds.height + 100 {
-                print("=== КУЛЬКА ПАДАЄ ЗА МЕЖІ ===")
-                print("ballPosition при падінні: x=\(ballPosition.x), y=\(ballPosition.y)")
-                print("cannonRealPosition: x=\(cannonRealPosition.x), y=\(cannonRealPosition.y)")
-                print("isFlying до скидання: \(isFlying)")
-                
+               
                 isFlying = false
                 timer.invalidate()
                 flightTimer = nil
@@ -378,10 +368,6 @@ struct TestGamePlayView: View {
                 // ВІДРАЗУ повертаємо кульку на позицію пушки
                 ballPosition = cannonRealPosition
                 
-                print("isFlying після скидання: \(isFlying)")
-                print("vx після скидання: \(vx), vy після скидання: \(vy)")
-                print("ballPosition після повернення: x=\(ballPosition.x), y=\(ballPosition.y)")
-                print("=== КІНЕЦЬ ПАДІННЯ ===")
             }
         }
     }
