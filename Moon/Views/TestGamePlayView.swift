@@ -25,6 +25,7 @@ struct TestGamePlayView: View {
     
     @ObservedObject var gameState: GameState
     @State var showPopup = false
+    @State private var popupState: PopupState = .pause
     
     @State private var ballPosition: CGPoint = CGPoint(x: 0, y: 0)
     @State private var vx: CGFloat = 0
@@ -46,6 +47,8 @@ struct TestGamePlayView: View {
     ]
     @State private var score: Int = 0
     @State private var flightTimer: Timer?
+    @State private var ballsRemaining: Int = 6  // Початкова кількість кульок
+    @State private var gameEnded: Bool = false  // Чи закінчилась гра
     
     let gravity: CGFloat = 0.4
     let initialSpeed: CGFloat = 25
@@ -205,7 +208,7 @@ struct TestGamePlayView: View {
                 
                 // Нижнє меню
                 ZStack {
-                    Image("Menu_Footer")
+                    Image("Property 1=icon_pause")
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                         .frame(maxWidth: .infinity, maxHeight: 150)
@@ -214,6 +217,7 @@ struct TestGamePlayView: View {
                     HStack {
                         Button(action: {
                             gameState.pauseGame()
+                            popupState = .pause
                             showPopup = true
                         }) {
                             Image("play bottom button=normal")
@@ -238,9 +242,12 @@ struct TestGamePlayView: View {
                                 Image(gameState.selectedSkin.backgroundImageName)
                                     .resizable()
                                     .aspectRatio(contentMode: .fit)
-                                    .frame(width: 70, height: 70)
+                                    .frame(width: 60, height: 60)
                                 
-                                Text("x6")  // кількість кульок
+                                Text("x\(ballsRemaining)")  // кількість кульок
+                                    .font(AppFonts.title)
+                                    .foregroundColor(.white)
+                                    .offset(x: 40, y: 15 )
                                     
                             }
                         }
@@ -249,7 +256,6 @@ struct TestGamePlayView: View {
                 }
             }
             
-            // Кулька під час польоту (видима тільки коли летить)
             Image(gameState.selectedSkin.backgroundImageName) // кулька
                 .resizable()
                 .aspectRatio(contentMode: .fit)
@@ -274,7 +280,7 @@ struct TestGamePlayView: View {
             .position(x: UIScreen.main.bounds.width / 2, y: UIScreen.main.bounds.height / 2)
             
             if showPopup {
-                PopupView(isPresented: $showPopup, state: .pause, gameState: gameState) {
+                PopupView(isPresented: $showPopup, state: popupState, gameState: gameState) {
                     EmptyView()
                 }
             }
@@ -315,7 +321,17 @@ struct TestGamePlayView: View {
     }
     
     func fire() {
-       
+        // Перевіряємо чи є кульки та чи не закінчилась гра
+        if ballsRemaining <= 0 || gameEnded {
+            return
+        }
+        
+        print("=== ПОЧАТОК ПОСТРІЛУ ===")
+        print("ballsRemaining: \(ballsRemaining)")
+        
+        // Зменшуємо кількість кульок
+        ballsRemaining -= 1
+        
         // Скидаємо попередній таймер та швидкості
         flightTimer?.invalidate()
         vx = 0
@@ -336,6 +352,7 @@ struct TestGamePlayView: View {
         isFlying = true
         print("isFlying після пострілу: \(isFlying)")
         print("vx: \(vx), vy: \(vy)")
+        print("ballsRemaining після пострілу: \(ballsRemaining)")
         print("=== КІНЕЦЬ ПОСТРІЛУ ===")
         
         flightTimer = Timer.scheduledTimer(withTimeInterval: 1.0/60.0, repeats: true) { timer in
@@ -358,6 +375,10 @@ struct TestGamePlayView: View {
             
             // Кулька падає за межі екрану
             if ballPosition.y >= UIScreen.main.bounds.height + 100 {
+                print("=== КУЛЬКА ПАДАЄ ЗА МЕЖІ ===")
+                print("ballPosition при падінні: x=\(ballPosition.x), y=\(ballPosition.y)")
+                print("ballsRemaining: \(ballsRemaining)")
+                print("gameEnded: \(gameEnded)")
                
                 isFlying = false
                 timer.invalidate()
@@ -368,6 +389,9 @@ struct TestGamePlayView: View {
                 // ВІДРАЗУ повертаємо кульку на позицію пушки
                 ballPosition = cannonRealPosition
                 
+                // Перевіряємо чи закінчились кульки
+                checkLoseCondition()
+                print("=== КІНЕЦЬ ПАДІННЯ ===")
             }
         }
     }
@@ -404,10 +428,88 @@ struct TestGamePlayView: View {
                         plinkoBalls[rowIndex][colIndex] = false // Робимо кульку прозорою
                         score += 1 // Додаємо бал
                         gameState.totalScore += 1 // Додаємо бал до загального рахунку
+                        
+                        // Перевіряємо чи всі Plinko кульки зникли
+                        checkWinCondition()
                     }
                 }
             }
         }
+    }
+    
+    func checkWinCondition() {
+        // Перевіряємо чи всі Plinko кульки зникли
+        var allBallsGone = true
+        for row in plinkoBalls {
+            for ball in row {
+                if ball {  // Якщо є хоча б одна видима кулька
+                    allBallsGone = false
+                    break
+                }
+            }
+            if !allBallsGone { break }
+        }
+        
+        if allBallsGone && !gameEnded {
+            print("=== ВИГРАШ! ВСІ КУЛЬКИ ЗНИКЛИ ===")
+            gameEnded = true
+            gameState.pauseGame()  // Зупиняємо таймер
+            popupState = .win
+            showPopup = true
+        }
+    }
+    
+    func checkLoseCondition() {
+        // Перевіряємо чи закінчились кульки і чи не всі Plinko кульки зникли
+        if ballsRemaining <= 0 && !gameEnded {
+            // Перевіряємо чи є ще Plinko кульки
+            var hasRemainingPlinkoBalls = false
+            for row in plinkoBalls {
+                for ball in row {
+                    if ball {  // Якщо є хоча б одна видима Plinko кулька
+                        hasRemainingPlinkoBalls = true
+                        break
+                    }
+                }
+                if hasRemainingPlinkoBalls { break }
+            }
+            
+            if hasRemainingPlinkoBalls {
+                print("=== ПРОГРАШ! ЗАКІНЧИЛИСЬ КУЛЬКИ ===")
+                gameEnded = true
+                gameState.pauseGame()  // Зупиняємо таймер
+                popupState = .lose
+                showPopup = true
+            }
+        }
+    }
+    
+    func resetGame() {
+        // Скидаємо всі змінні гри
+        ballsRemaining = 6
+        gameEnded = false
+        score = 0
+        isFlying = false
+        vx = 0
+        vy = 0
+        ballPosition = cannonRealPosition
+        
+        // Скидаємо всі Plinko кульки
+        plinkoBalls = [
+            Array(repeating: true, count: 7),
+            Array(repeating: true, count: 6),
+            Array(repeating: true, count: 7),
+            Array(repeating: true, count: 6)
+        ]
+        
+        // Скидаємо таймер
+        flightTimer?.invalidate()
+        flightTimer = nil
+        
+        // Перезапускаємо ігровий таймер
+        gameState.startGameTimer()
+        
+        print("=== ГРА СКИНУТА ===")
     }
     
     func checkBarrierCollision() {
