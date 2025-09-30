@@ -32,6 +32,12 @@ struct TestGamePlayView: View {
     @State private var isFlying = false
     @State private var cannonFrame: CGRect = .zero
     @State private var cannonRealPosition: CGPoint = CGPoint(x: 0, y: 0)
+    
+    // Координати бордерів
+    @State private var barrier1Frame: CGRect = .zero // Перший ряд - лівий
+    @State private var barrier2Frame: CGRect = .zero // Перший ряд - правий
+    @State private var barrier3Frame: CGRect = .zero // Другий ряд - лівий
+    @State private var barrier4Frame: CGRect = .zero // Другий ряд - правий
     @State private var plinkoBalls: [[Bool]] = [
         Array(repeating: true, count: 6),  // 1-й ряд: 6 кульок
         Array(repeating: true, count: 7),  // 2-й ряд: 7 кульок
@@ -42,11 +48,11 @@ struct TestGamePlayView: View {
     @State private var score: Int = 0
     
     // Константи
-    let gravity: CGFloat = 0.3       // сила тяжіння (зменшено)
-    let initialSpeed: CGFloat = 25   // початкова швидкість (зменшено)
+    let gravity: CGFloat = 0.4       // сила тяжіння (оптимізовано)
+    let initialSpeed: CGFloat = 20   // початкова швидкість (оптимізовано)
     let ballRadius: CGFloat = 15     // радіус кульки
     let topY: CGFloat = 100          // висота верхньої в'юшки
-    let damping: CGFloat = 0.5       // коефіцієнт втрати енергії при відскоку (зменшено)
+    let damping: CGFloat = 0.7       // коефіцієнт втрати енергії при відскоку (оптимізовано)
     
     var body: some View {
         ZStack {
@@ -96,6 +102,10 @@ struct TestGamePlayView: View {
                         .aspectRatio(contentMode: .fit)
                         .frame(width: 60, height: 90)
                         .offset(x: -6)
+                        .captureFrame(in: .global) { frame in
+                            barrier1Frame = frame
+                            print("Бордер 1 (лівий верх): x=\(Int(frame.midX)), y=\(Int(frame.midY))")
+                        }
                     Spacer()
                     Spacer()
                     
@@ -104,6 +114,10 @@ struct TestGamePlayView: View {
                         .aspectRatio(contentMode: .fit)
                         .frame(width: 60, height: 90)
                         .offset(x: 6)
+                        .captureFrame(in: .global) { frame in
+                            barrier2Frame = frame
+                            print("Бордер 2 (правий верх): x=\(Int(frame.midX)), y=\(Int(frame.midY))")
+                        }
                 }
                 
                 Spacer()
@@ -115,6 +129,10 @@ struct TestGamePlayView: View {
                         .aspectRatio(contentMode: .fit)
                         .frame(width: 60, height: 90)
                         .offset(x: -6)
+                        .captureFrame(in: .global) { frame in
+                            barrier3Frame = frame
+                            print("Бордер 3 (лівий низ): x=\(Int(frame.midX)), y=\(Int(frame.midY))")
+                        }
                     
                     Spacer()
                     Spacer()
@@ -124,6 +142,10 @@ struct TestGamePlayView: View {
                         .aspectRatio(contentMode: .fit)
                         .frame(width: 60, height: 90)
                         .offset(x: 6)
+                        .captureFrame(in: .global) { frame in
+                            barrier4Frame = frame
+                            print("Бордер 4 (правий низ): x=\(Int(frame.midX)), y=\(Int(frame.midY))")
+                        }
                 }
                 
                 Spacer()
@@ -302,7 +324,7 @@ struct TestGamePlayView: View {
         
         isFlying = true
         
-        Timer.scheduledTimer(withTimeInterval: 0.016, repeats: true) { timer in
+        Timer.scheduledTimer(withTimeInterval: 1.0/60.0, repeats: true) { timer in
             vy += gravity
             ballPosition.x += vx
             ballPosition.y += vy
@@ -313,9 +335,10 @@ struct TestGamePlayView: View {
             // Відбиття від бордерів
             checkBarrierCollision()
             
-            // Стеля (відскок від верхньої в'юшки)
-            if ballPosition.y - ballRadius <= topY + 10 {
-                ballPosition.y = topY + 10 + ballRadius
+            // Відбиття від верхнього меню (score_header_frame)
+            let topMenuHeight: CGFloat = 120 // Висота верхнього меню з padding
+            if ballPosition.y - ballRadius <= topMenuHeight {
+                ballPosition.y = topMenuHeight + ballRadius
                 vy = -vy * damping
             }
             
@@ -323,6 +346,7 @@ struct TestGamePlayView: View {
             if ballPosition.y >= UIScreen.main.bounds.height + 100 {
                 isFlying = false
                 timer.invalidate()
+                print("улька падає за межі екрану")
                 // Повертаємо кульку на стартову позицію через 2 секунди
                 DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
                     ballPosition = cannonRealPosition
@@ -369,43 +393,46 @@ struct TestGamePlayView: View {
     }
     
     func checkBarrierCollision() {
-        let screenWidth = UIScreen.main.bounds.width
-        let screenHeight = UIScreen.main.bounds.height
-        let barrierWidth: CGFloat = 60
-        let barrierHeight: CGFloat = 90
         let ballSize: CGFloat = 30
-        let menuHeight: CGFloat = 80  // Висота верхнього меню
         
-        // Відбиття від верхнього меню
-        if ballPosition.y <= menuHeight + 50 {
-            ballPosition.y = menuHeight + 50
-            vy = -vy * damping
-        }
+        // Масив всіх бордерів для перевірки
+        let barriers = [barrier1Frame, barrier2Frame, barrier3Frame, barrier4Frame]
         
-        // Позиції бордерів (приблизно)
-        let barrierY1 = screenHeight * 0.25  // Перший ряд бордерів
-        let barrierY2 = screenHeight * 0.45  // Другий ряд бордерів
-        
-        // Лівий бордер
-        let leftBarrierX = screenWidth * 0.25
-        // Правий бордер  
-        let rightBarrierX = screenWidth * 0.75
-        
-        // Перевірка зіткнення з лівими бордерами
-        if (ballPosition.x >= leftBarrierX - barrierWidth/2 && ballPosition.x <= leftBarrierX + barrierWidth/2) {
-            if (ballPosition.y >= barrierY1 - barrierHeight/2 && ballPosition.y <= barrierY1 + barrierHeight/2) ||
-               (ballPosition.y >= barrierY2 - barrierHeight/2 && ballPosition.y <= barrierY2 + barrierHeight/2) {
-                vx = -vx * damping
-                ballPosition.x = leftBarrierX - barrierWidth/2 - ballSize/2
-            }
-        }
-        
-        // Перевірка зіткнення з правими бордерами
-        if (ballPosition.x >= rightBarrierX - barrierWidth/2 && ballPosition.x <= rightBarrierX + barrierWidth/2) {
-            if (ballPosition.y >= barrierY1 - barrierHeight/2 && ballPosition.y <= barrierY1 + barrierHeight/2) ||
-               (ballPosition.y >= barrierY2 - barrierHeight/2 && ballPosition.y <= barrierY2 + barrierHeight/2) {
-                vx = -vx * damping
-                ballPosition.x = rightBarrierX + barrierWidth/2 + ballSize/2
+        for barrier in barriers {
+            // Перевіряємо чи бордер ініціалізований (не .zero)
+            if barrier != .zero {
+                // Перевірка зіткнення з бордером
+                if ballPosition.x >= barrier.minX && ballPosition.x <= barrier.maxX &&
+                   ballPosition.y >= barrier.minY && ballPosition.y <= barrier.maxY {
+                    
+                    // Визначаємо з якої сторони зіткнення
+                    let leftDistance = abs(ballPosition.x - barrier.minX)
+                    let rightDistance = abs(ballPosition.x - barrier.maxX)
+                    let topDistance = abs(ballPosition.y - barrier.minY)
+                    let bottomDistance = abs(ballPosition.y - barrier.maxY)
+                    
+                    let minDistance = min(leftDistance, rightDistance, topDistance, bottomDistance)
+                    
+                    if minDistance == leftDistance {
+                        // Зіткнення зліва
+                        vx = -vx * damping
+                        ballPosition.x = barrier.minX - ballSize/2
+                    } else if minDistance == rightDistance {
+                        // Зіткнення справа
+                        vx = -vx * damping
+                        ballPosition.x = barrier.maxX + ballSize/2
+                    } else if minDistance == topDistance {
+                        // Зіткнення зверху
+                        vy = -vy * damping
+                        ballPosition.y = barrier.minY - ballSize/2
+                    } else {
+                        // Зіткнення знизу
+                        vy = -vy * damping
+                        ballPosition.y = barrier.maxY + ballSize/2
+                    }
+                    
+                    print("Зіткнення з бордером: x=\(Int(barrier.midX)), y=\(Int(barrier.midY))")
+                }
             }
         }
     }
