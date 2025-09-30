@@ -1,6 +1,7 @@
 import SwiftUI
 import Combine
 import AVFoundation
+
 class GameState: ObservableObject {
     private var audioPlayer: AVAudioPlayer?
     @Published var isSoundOn: Bool {

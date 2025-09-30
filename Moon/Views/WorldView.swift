@@ -52,7 +52,7 @@ struct WorldView: View {
                                                     .frame(width: 60, height: 60)
                                                     .offset(x: 40)
                                             } else {
-                                                NavigationLink(destination: TestGamePlayView(gameState: gameState)) {
+                                                NavigationLink(destination: GamePlayView(gameState: gameState)) {
                                                     Image("play bottom button=normal")
                                                         .resizable()
                                                         .aspectRatio(contentMode: .fit)
@@ -118,7 +118,7 @@ struct WorldView: View {
                             .frame(maxWidth: .infinity, maxHeight: 150)
                             .offset(y: 20)
                         HStack {
-                            NavigationLink(destination: TestGamePlayView(gameState: gameState)) {
+                            NavigationLink(destination: GamePlayView(gameState: gameState)) {
                                 Image("play bottom button=normal")
                                     .resizable()
                                     .aspectRatio(contentMode: .fit)

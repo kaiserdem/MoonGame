@@ -137,7 +137,7 @@ struct StoreView: View {
                                     .aspectRatio(contentMode: .fit)
                                     .frame(width: 70, height: 70)
                             }
-                            NavigationLink(destination: TestGamePlayView(gameState: gameState)) { 
+                            NavigationLink(destination: GamePlayView(gameState: gameState)) { 
                                 Image("play bottom button=normal")
                                     .resizable()
                                     .aspectRatio(contentMode: .fit)
