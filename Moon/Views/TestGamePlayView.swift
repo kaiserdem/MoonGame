@@ -48,29 +48,26 @@ struct TestGamePlayView: View {
     ]
     @State private var score: Int = 0
     @State private var flightTimer: Timer?
-    @State private var ballsRemaining: Int = 6  // Початкова кількість кульок
-    @State private var gameEnded: Bool = false  // Чи закінчилась гра
+    @State private var ballsRemaining: Int = 12
+    @State private var gameEnded: Bool = false
     
     let gravity: CGFloat = 0.4
     let initialSpeed: CGFloat = 25
-    let ballRadius: CGFloat = 10     // радіус кульки
-    let topY: CGFloat = 100          // висота верхньої в'юшки
-    let damping: CGFloat = 0.7       // коефіцієнт втрати енергії при відскоку (оптимізовано)
+    let ballRadius: CGFloat = 10
+    let topY: CGFloat = 100
+    let damping: CGFloat = 0.7
     
     var body: some View {
         ZStack {
-            // Фон
             Image(gameState.selectedWorld.backgroundImageName)
                 .resizable()
                 .aspectRatio(contentMode: .fill)
                 .ignoresSafeArea()
                 .blur(radius: 2)
             
-            // Елементи в VStack
             VStack {
-                // Верхнє меню
                 ZStack {
-                    Image("score_header_frame") // верхне меню
+                    Image("score_header_frame")
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                         .frame(maxWidth: .infinity)
@@ -96,9 +93,8 @@ struct TestGamePlayView: View {
                     }
                     .padding(.horizontal, 40)
                 }
-                .padding(.top, 50)  // верхне меню
+                .padding(.top, 50)
                 
-                // Верхні бордери
                 HStack {
                     Image("Bounce_Barrier_01")
                         .resizable()
@@ -297,6 +293,8 @@ struct TestGamePlayView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .navigationBarHidden(true)
         .onAppear {
+            // Скидаємо позицію пушки в центр
+            gameState.resetCannonPosition()
             gameState.startGameTimer()
             // Ініціалізуємо позицію кульки на позиції пушки
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
@@ -435,8 +433,8 @@ struct TestGamePlayView: View {
                         // Зіткнення!
                         print("Зіткнення з Plinko кулькою: ряд \(rowIndex), колонка \(colIndex), відстань: \(distance)")
                         plinkoBalls[rowIndex][colIndex] = false // Робимо кульку прозорою
-                        score += 1 // Додаємо бал
-                        gameState.totalScore += 1 // Додаємо бал до загального рахунку
+                        score += 2 // Додаємо бал
+                        gameState.totalScore += 2 // Додаємо бал до загального рахунку
                         
                         // Перевіряємо чи всі Plinko кульки зникли
                         checkWinCondition()
@@ -501,6 +499,10 @@ struct TestGamePlayView: View {
         isFlying = false
         vx = 0
         vy = 0
+        
+        // Скидаємо позицію пушки в центр
+        gameState.resetCannonPosition()
+        
         ballPosition = cannonRealPosition
         
         // Скидаємо всі Plinko кульки

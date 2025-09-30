@@ -123,8 +123,9 @@ struct PopupView<Content: View>: View {
                                 .frame(maxWidth: .infinity, maxHeight: 70)
                         }
                         
-                        if state == .pause {
+//                        if state == .pause {
                             Button(action: {
+                                onRestart?()
                                 onMenu?()
                             }) {
                                 ZStack {
@@ -140,9 +141,9 @@ struct PopupView<Content: View>: View {
                                         .frame(width: 40, height: 40)
                                 }
                             }
-                        } else {
-                            Spacer()
-                        }
+//                        } else {
+//                            Spacer()
+//                        }
                         
                         Spacer()
                     }
