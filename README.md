@@ -132,6 +132,5 @@
 
 ---
 
-**Розробник**: Yaroslav Golinskiy  
 **Платформа**: iOS  
 **Технології**: SwiftUI, Swift 5
